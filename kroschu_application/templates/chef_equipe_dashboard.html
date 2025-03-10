@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Chef d'Équipe</title>
+    <link rel="stylesheet" href="{% static 'css/chef_equipe_dashboard.css' %}">
+</head>
+<body>
+    <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
+        <i class="fas fa-sign-out-alt"></i> Se déconnecter
+    </a>
+    <h2>Bienvenue, Chef d'Équipe</h2>
+
+    <!-- Formulaire pour affecter une tâche -->
+    <h3>Affecter une Tâche à un Opérateur</h3>
+    <form method="POST" action="{% url 'kroschu_application:affecter_tache' %}">
+        {% csrf_token %}
+        <label for="user_id">Choisissez un Opérateur :</label>
+        <select name="user_id" id="user_id">
+            {% for operateur in operateurs %}
+                <option value="{{ operateur.user_id }}">{{ operateur.user_id }} {{ operateur.nom }} {{ operateur.prenom }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="type_machine">Choisissez le type de machine :</label>
+        <select name="type_machine" id="type_machine">
+            <option value="soudage">Soudage</option>
+            <option value="sertissage">Sertissage</option>
+            <option value="coupage">Coupage</option>
+        </select>
+
+        <button type="submit">Affecter la tâche</button>
+    </form>
+
+    <!-- Liste des Tâches en attente -->
+    <h3>Liste des Tâches  </h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Tâche</th>
+                <th>User ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Type de Machine</th>
+                <th>Date de Création</th>
+                <th>Statut</th>
+                <th>Temps écoulé</th>
+                
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for tache in taches %}
+            <tr>
+                <td>{{ tache.id }}</td>
+                <td>{{ tache.user_id.user_id }}</td>
+                <td>{{ tache.user_id.nom }}</td>
+                <td>{{ tache.user_id.prenom }}</td>
+                <td>{{ tache.type_machine }}</td>
+                <td>{{ tache.created_at|date:"d/m/Y H:i" }}</td>
+
+                <td>
+                    <span class="statut {% if tache.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
+                        {{ tache.statut }}
+                    </span>
+                </td>
+                <td>
+                    {% if tache.temps_de_traitement %}
+                        {{ tache.temps_de_traitement|floatformat:2 }}
+                    {% else %}
+                        En attente
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">Aucune tâche en attente</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Demande au chef de se rendre sur place.</h3>
+    <h3>Liste des alertes de chef d'equipe</h3>
+    
+    <!-- Table des alertes -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID Alerte</th>
+                <th>User ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Type de D'alerte</th>
+                <th>Date de Création</th>
+                <th>Statut</th>
+                <th>Temps écoulé</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for alertechef in alertechefs%}
+            <tr>
+                <td>{{ alertechef.id }}</td>
+                <td>{{ alertechef.user_id }}</td>
+                <td>{{ alertechef.user_id.nom }}</td>
+                <td>{{ alertechef.user_id.prenom }}</td>
+                <td>{{ alertechef.type_alertechef }}</td>
+                <td>{{ alertechef.created_at|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <span class="statut {% if alertechef.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
+                        {{ alertechef.statut }}
+                    </span>
+                </td>
+                <td>
+                    {% if alertechef.temps_de_traitement %}
+                        {{ alertechef.temps_de_traitement|floatformat:2 }}
+                    {% else %}
+                        En attente
+                    {% endif %}
+                </td>
+                
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">Aucune alerte disponible</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+
+</body>
+</html>

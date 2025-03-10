@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil | Kromberg & Schubert</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Lien vers votre fichier CSS -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+   
+    <div class="home-container">
+        <header class="navbar">
+            <div class="logo">
+                <img src="{% static 'images/images.png' %}" alt="Kromberg & Schubert">
+            </div>
+        </header>
+
+        <main class="content">
+            <h1>Bienvenue chez <br> <span>Kromberg & Schubert</span></h1>
+            <p>Leader dans l'innovation et la fabrication de faisceaux électriques.</p>
+
+            <div class="buttons">
+                <a href="{% url 'kroschu_application:register_view' %}" class="btn primary">
+                    <i class="fas fa-user-plus"></i> Créer un compte
+                </a>
+                <a href="{% url 'kroschu_application:login_view' %}" class="btn secondary">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Maintenance</title>
+    <link rel="stylesheet" href="{% static 'css/maintenance_dashboard.css' %}">
+</head>
+<body>
+    <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
+        <i class="fas fa-sign-out-alt"></i> Se déconnecter
+    </a>
+    <h2>Bienvenue, Responsable Maintenance</h2>
+
+    <!-- Section pour afficher les alertes de maintenance -->
+    <h3>Liste des alertes de maintenance</h3>
+    
+    <!-- Table des alertes -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID Alerte</th>
+                <th>User ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Type de D'alerte</th>
+                <th>Date de Création</th>
+                <th>Statut</th>
+                <th>Temps écoulé</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for alertemain in alertemains %}
+            <tr>
+                <td>{{ alertemain.id }}</td>
+                <td>{{ alertemain.user_id }}</td>
+                <td>{{ alertemain.user_id.nom }}</td>
+                <td>{{ alertemain.user_id.prenom  }}</td>
+                <td>{{ alertemain.type_alertemain }}</td>
+                <td>{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <span class="statut {% if alertemain.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
+                        {{ alertemain.statut }}
+                    </span>
+                </td>
+                <td>
+                    {% if alertemain.temps_de_traitement %}
+                        {{ alertemain.temps_de_traitement|floatformat:2 }}
+                    {% else %}
+                        En attente
+                    {% endif %}
+                </td>
+                
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">Aucune alerte disponible</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
+
+</body>
+</html>

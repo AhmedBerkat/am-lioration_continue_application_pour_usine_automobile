@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="user_id">ID Utilisateur:</label>
+        <input type="text" name="user_id" id="user_id" required><br>
+
+        <label for="nom">Nom:</label>
+        <input type="text" name="nom" id="nom" required><br>
+
+        <label for="prenom">Prénom:</label>
+        <input type="text" name="prenom" id="prenom" required><br>
+
+        <label for="role">Rôle:</label>
+        <select name="role" id="role" required>
+            <option value="operateur">Opérateur</option>
+            <option value="logistique">Logistique</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="qualite">Qualité</option>
+            <option value="chef_equipe">Chef d'équipe</option>
+        </select><br>
+
+        <label for="password">Mot de passe:</label>
+        <input type="password" name="password" id="password" required><br>
+
+        <button type="submit">S'inscrire</button>
+    </form>
+</body>
+</html>

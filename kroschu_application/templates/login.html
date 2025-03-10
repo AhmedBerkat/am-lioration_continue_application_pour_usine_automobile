@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page de Connexion</title>
+    <!-- Lien vers le fichier CSS -->
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+    <!-- Conteneur du formulaire de connexion -->
+    <div class="container">
+        <h2>Se connecter</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label for="user_id">ID Utilisateur:</label>
+            <input type="text" name="user_id" id="user_id" required><br>
+
+            <label for="password">Mot de passe:</label>
+            <input type="password" name="password" id="password" required><br>
+
+            <button type="submit">Se connecter</button>
+        </form>
+
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

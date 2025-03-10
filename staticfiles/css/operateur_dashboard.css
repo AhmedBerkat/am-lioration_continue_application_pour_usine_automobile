@@ -1,0 +1,137 @@
+/* Importation de la police */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #fff;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+.logout-button {
+    position: fixed;  /* Fixe l'élément en haut à droite de l'écran */
+    top: 20px;
+    right: 20px;
+    background: #6c757d;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.logout-button i {
+    margin-right: 5px;
+}
+
+.logout-button:hover {
+    background: #ff4d4d;
+}
+
+h2, h3 {
+    text-align: center;
+    font-weight: bold;
+    border-radius: 7px;
+    padding: 8px; /* Augmenté */
+    margin: 4px 0;
+}
+
+h2 { color: #030303; font-size: 24px; } /* Agrandi */
+h3 { background: #5e03f1; color: #e7e4e4; font-size: 22px; }
+
+.section, .history {
+    background: #d1d0d0;
+    margin: 8px auto;
+    padding: 8px; /* Plus d'espace */
+    border-radius: 7px;
+    width: 98%; /* Presque toute la largeur */
+    max-width: 900px; /* Plus large */
+    box-shadow: 0 0 5px rgba(37, 37, 36, 0.6);
+}
+
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Espacement augmenté */
+    justify-content: center;
+}
+
+.option {
+    flex: 1;
+    min-width: 150px; /* Plus large */
+    text-align: center;
+    padding: 12px; /* Augmenté */
+    border-radius: 7px;
+    font-weight: bold;
+    transition: 0.2s;
+    color: #fff;
+}
+
+.option:nth-child(1) { background: #2c3e50; }
+.option:nth-child(2) { background: #ffd700; color: #000; }
+.option:nth-child(3) { background: #ff0000; }
+
+form {
+    margin-top: 8px;
+    text-align: center;
+}
+
+label {
+    font-weight: bold;
+    font-size: 16px; /* Agrandi */
+}
+
+select, button {
+    width: 100%; /* Remplit toute la largeur */
+    padding: 8px; /* Plus d'espace */
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+button {
+    background: #00ff3c;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+table {
+    width: 100%; /* Élargi au max */
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 16px; /* Agrandi */
+    border-radius: 4px;
+    background: #444;
+}
+
+th {
+    background: #6A0572;
+    color: #FFD700;
+    padding: 8px; /* Augmenté */
+}
+
+td {
+    border: 1px solid #080808;
+    padding: 8px; /* Augmenté */
+    text-align: center;
+    background: #d1cece;
+}
+
+tr:nth-child(even), tr:hover {
+    background: #d1cece;
+}
+
+@media (max-width: 768px) {
+    .options { flex-direction: column; }
+    .option { min-width: 100%; }
+    .section, .history { width: 98%; }
+}
+
+.demande-materiel { background: #00a833; color: white; }
+.Alertes { background: #800080; color: white; }
+.Maintenance { background: #2c3e50; color: white; }
+.Qualité { background: #ffd700; color: black; }
+.chef-dequipe { background: #ff0000; color: white; }
