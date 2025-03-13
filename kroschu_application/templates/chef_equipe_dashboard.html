@@ -20,7 +20,7 @@
         <label for="user_id">Choisissez un Opérateur :</label>
         <select name="user_id" id="user_id">
             {% for operateur in operateurs %}
-                <option value="{{ operateur.user_id }}">{{ operateur.user_id }} {{ operateur.nom }} {{ operateur.prenom }}</option>
+                <option value="{{ operateur.user_id }}">{{ operateur.user_id }} - Shift : {{ operateur.shift }}   - Poste :  {{ operateur.poste }}</option>
             {% endfor %}
         </select>
 
@@ -28,9 +28,12 @@
         <select name="type_machine" id="type_machine">
             <option value="soudage">Soudage</option>
             <option value="sertissage">Sertissage</option>
-            <option value="coupage">Coupage</option>
         </select>
-
+        <div id="description">
+            <label for="description">Description :</label>
+            <textarea name="description" id="description"></textarea>
+        </div>
+    
         <button type="submit">Affecter la tâche</button>
     </form>
 
@@ -40,10 +43,12 @@
         <thead>
             <tr>
                 <th>ID Tâche</th>
-                <th>User ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Type de Machine</th>
+                <th>ID Utilisateur</th>
+                <th>Nom Prénom</th>
+                <th>Shift</th>
+                <th>Poste</th>
+                <th>Type de machine</th>
+                <th>Description</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
                 <th>Temps écoulé</th>
@@ -56,9 +61,11 @@
             <tr>
                 <td>{{ tache.id }}</td>
                 <td>{{ tache.user_id.user_id }}</td>
-                <td>{{ tache.user_id.nom }}</td>
-                <td>{{ tache.user_id.prenom }}</td>
+                <td>{{ tache.user_id.nom_prenom }}</td>
+                <td>{{ tache.user_id.shift }}</td>
+                <td>{{ tache.user_id.poste }}</td>
                 <td>{{ tache.type_machine }}</td>
+                <td>{{ tache.description }}</td>
                 <td>{{ tache.created_at|date:"d/m/Y H:i" }}</td>
 
                 <td>
@@ -89,10 +96,10 @@
         <thead>
             <tr>
                 <th>ID Alerte</th>
-                <th>User ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Type de D'alerte</th>
+                <th>ID Utilisateur</th>
+                <th>Nom Prénom</th>
+                <th>Shift</th>
+                <th>Poste</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
                 <th>Temps écoulé</th>
@@ -104,9 +111,9 @@
             <tr>
                 <td>{{ alertechef.id }}</td>
                 <td>{{ alertechef.user_id }}</td>
-                <td>{{ alertechef.user_id.nom }}</td>
-                <td>{{ alertechef.user_id.prenom }}</td>
-                <td>{{ alertechef.type_alertechef }}</td>
+                <td>{{ alertechef.user_id.nom_prenom }}</td>
+                <td>{{ alertechef.user_id.shift }}</td>
+                <td>{{ alertechef.user_id.poste }}</td>
                 <td>{{ alertechef.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
                     <span class="statut {% if alertechef.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">

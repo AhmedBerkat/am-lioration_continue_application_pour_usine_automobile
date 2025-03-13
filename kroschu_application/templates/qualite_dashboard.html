@@ -22,10 +22,10 @@
         <thead>
             <tr>
                 <th>ID Alerte</th>
-                <th>User ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Type de D'alerte</th>
+                <th>ID Utilisateur</th>
+                <th>Nom Prénom</th>
+                <th>Shift</th>
+                <th>Poste</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
                 <th>Temps écoulé</th>
@@ -37,9 +37,9 @@
             <tr>
                 <td>{{ alertequal.id }}</td>
                 <td>{{ alertequal.user_id }}</td>
-                <td>{{ alertequal.user_id.nom }}</td>
-                <td>{{ alertequal.user_id.prenom }}</td>
-                <td>{{ alertequal.type_alertequal }}</td>
+                <td>{{ alertequal.user_id.nom_prenom }}</td>
+                <td>{{ alertequal.user_id.shift }}</td>
+                <td>{{ alertequal.user_id.poste }}</td>
                 <td>{{ alertequal.created_at|date:"d/m/Y H:i" }}</td>
 
                 <td>

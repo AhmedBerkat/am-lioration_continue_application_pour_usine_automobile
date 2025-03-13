@@ -12,11 +12,12 @@ body {
     padding: 20px;
     text-align: center;
 }
+
 .logout-button {
     position: fixed;  /* Fixe l'élément en haut à droite de l'écran */
     top: 20px;
     right: 20px;
-    background: #6c757d;
+    background: #007BFF;
     color: white;
     padding: 8px 12px;
     border-radius: 5px;
@@ -30,7 +31,7 @@ body {
 }
 
 .logout-button:hover {
-    background: #ff4d4d;
+    background: #0056b3;
 }
 
 /* ✅ Titre principal */
@@ -48,6 +49,7 @@ h3 {
 /* ✅ Table des alertes */
 table {
     width: 90%;
+    max-width: 100%;
     margin: 0 auto;
     border-collapse: collapse;
     background: white;
@@ -71,8 +73,6 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 
-
-
 td {
     background-color: #f9f9f9;
 }
@@ -90,8 +90,6 @@ tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-
-
 /* ✅ Statut des alertes */
 .statut {
     display: inline-block;
@@ -101,7 +99,6 @@ tbody tr:nth-child(even) {
 }
 
 .statut.en-attente {
-    
     font-weight: bold;
     background-color: red;
     color: white;
@@ -125,3 +122,25 @@ button:hover {
     background-color: #45a049;
 }
 
+/* ✅ Style responsive */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .logout-button {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    table {
+        width: 100%;
+    }
+    th, td {
+        padding: 8px;
+    }
+    button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}

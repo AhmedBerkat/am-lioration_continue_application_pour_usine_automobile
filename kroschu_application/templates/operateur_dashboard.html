@@ -14,77 +14,46 @@
     <h2>Bienvenue, Opérateur</h2>
 
     <!-- Section Demande -->
-    <div class="section">
-        <h3 class="demande-materiel">Demande de matériel</h3>
-
-        <form method="POST" action="{% url 'kroschu_application:demande_materiel' %}">
-            {% csrf_token %}
-            <label for="type_materiel">Choisir le type de matériel:</label>
-            <select name="type_materiel" id="type_materiel">
-                <option value="fil">Fil</option>
-                <option value="gaine">Gaine</option>
-                <option value="terminale">Terminale</option>
-                <option value="connecteur">Connecteur</option>
-            </select>
-            <!-- Champ pour ajouter une description -->
+    <div class="dashboard-container">
+        <!-- Colonne gauche -->
+        <div class="left-column">
+            <div class="section">
+                <h3>Alerte maintenance</h3>
+                <form method="POST" action="{% url 'kroschu_application:alerte_maintenance' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="circle-button maintenance-button"></button>
+                </form>
+            </div>
     
-            <button type="submit">Envoyer la demande</button>
-        </form>
+            <div class="section">
+                <h3>Alerte qualité</h3>
+                <form method="POST" action="{% url 'kroschu_application:alerte_qualite' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="circle-button qualite-button"></button>
+                </form>
+            </div>
+        </div>
+    
+    
+        <!-- Colonne droite -->
+        <div class="right-column">
+            <div class="section">
+                <h3>Demande matériel</h3>
+                <form method="POST" action="{% url 'kroschu_application:demande_materiel' %}">
+                    {% csrf_token %}    
+                    <button type="submit" class="circle-button demande-materiel-button"></button>
+                </form>
+            </div>
+    
+            <div class="section">
+                <h3>Alerte chef d’équipe / polyvalent</h3>
+                <form method="POST" action="{% url 'kroschu_application:alerte_chef' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="circle-button chef-button"></button>
+                </form>
+            </div>
+        </div>
     </div>
-    <hr>
-    <!-- Section Alertes -->
-    <div class="section">
-
-        <!-- Formulaire pour envoyer une alerte -->
-            <!-- Section Alertes -->
-    <div class="section">
-        <h3 class="Maintenance">Alertes Maintenance</h3>
-        <form method="POST" action="{% url 'kroschu_application:alerte_maintenance' %}">
-            {% csrf_token %}
-            <label for="type_alertemain">Choisir le type de panne:</label>
-            <select name="type_alertemain" id="type_alertemain">
-                <option value="mecanique">Mécanique</option>
-                <option value="hydraulique">Hydraulique</option>
-                <option value="electrique">Électrique</option>
-                <option value="autre">Autre</option>
-            </select>
-            
-            <button type="submit">Envoyer l'alerte</button>
-        </form>
-        
-    </div>
-    <div class="section">
-        <h3 class="Qualité">Alertes Qualité</h3>
-        <form method="POST" action="{% url 'kroschu_application:alerte_qualite' %}">
-            {% csrf_token %}
-            <label for="type_alertequal">Choisir le type d'alerte pour Qualité:</label>
-            <select name="type_alertequal" id="type_alertequal">
-                <option value="verification">Vérification</option>
-                <option value="validation">Validation</option>
-                <option value="autre">Autre</option>
-            </select>
-            
-            <button type="submit">Envoyer l'alerte</button>
-        </form>
-        
-    </div>
-    <div class="section">
-        <h3 class="chef-dequipe">Alertes chef d'equipe</h3>
-        <form method="POST" action="{% url 'kroschu_application:alerte_chef' %}">
-            {% csrf_token %}
-            <label for="type_alertechef">Choisir le type d'alerte pour Chef d'équipe:</label>
-            <select name="type_alertechef" id="type_alertechef">
-                <option value="assistance">Assistance</option>
-                <option value="autre">Autre</option>
-            </select>
-            
-            <button type="submit">Envoyer l'alerte</button>
-        </form>
-        
-    </div>
-    </div>
-
-    <hr>
 
     <!-- Section Historique des demandes et alertes -->
     <div class="history">
@@ -96,7 +65,6 @@
             <thead>
                 <tr>
                     <th>ID Demande</th>
-                    <th>Type de matériel</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -105,13 +73,12 @@
                 {% for demande in demandes %}
                     <tr>
                         <td>{{ demande.id }}</td>
-                        <td>{{ demande.type_materiel }}</td>
                         <td>{{ demande.statut}}</td>
                         <td>
                             {% if demande.statut == 'en_attente' %}
                                 <form method="POST" action="{% url 'kroschu_application:valider_demande' demande.id %}">
                                     {% csrf_token %}
-                                    <button type="submit">Valider l'intervention logistique</button>
+                                    <button type="submit">Valider </button>
                                 </form>
                             {% endif %}
                         </td>
@@ -128,7 +95,6 @@
             <thead>
                 <tr>
                     <th>ID Alerte</th>
-                    <th>Type d'alerte</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -137,13 +103,12 @@
                 {% for alertemain in alertemains %}
                     <tr>
                         <td>{{ alertemain.id }}</td>
-                        <td>{{ alertemain.type_alertemain }}</td>
                         <td>{{ alertemain.statut}}</td>
                         <td>
                             {% if alertemain.statut == 'en_attente' %}
                                 <form method="POST" action="{% url 'kroschu_application:valider_alerte_maintenance' alertemain.id %}">
                                     {% csrf_token %}
-                                    <button type="submit">Valider l'intervention maintenance</button>
+                                    <button type="submit">Valider </button>
                                 </form>
                             {% endif %}
                         </td>
@@ -158,7 +123,6 @@
             <thead>
                 <tr>
                     <th>ID Alerte</th>
-                    <th>Type d'alerte</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -167,13 +131,12 @@
                 {% for  alertequal in alertequals %}
                     <tr>
                         <td>{{  alertequal.id }}</td>
-                        <td>{{  alertequal.type_alertequal }}</td>
                         <td>{{  alertequal.statut }}</td>
                         <td>
                             {% if  alertequal.statut == 'en_attente' %}
                                 <form method="POST" action="{% url 'kroschu_application:valider_alerte_qualite'  alertequal.id %}">
                                     {% csrf_token %}
-                                    <button type="submit">Valider l'intervention qualité</button>
+                                    <button type="submit">Valider</button>
                                 </form>
                             {% endif %}
                         </td>
@@ -188,7 +151,6 @@
             <thead>
                 <tr>
                     <th>ID Alerte</th>
-                    <th>Type d'alerte</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -197,13 +159,12 @@
                 {% for alertechef in alertechefs %}
                     <tr>
                         <td>{{ alertechef.id }}</td>
-                        <td>{{ alertechef.type_alertechef }}</td>
                         <td>{{ alertechef.statut }}</td>
                         <td>
                             {% if alertechef.statut == 'en_attente' %}
                                 <form method="POST" action="{% url 'kroschu_application:valider_alerte_chef' alertechef.id %}">
                                     {% csrf_token %}
-                                    <button type="submit">Valider l'intervention de chef d'équipe</button>
+                                    <button type="submit">Valider</button>
                                 </form>
                             {% endif %}
                         </td>
@@ -223,7 +184,7 @@
         <tr>
             <th>ID Tâche</th>
             <th>Type de Machine</th>
-            <th>Statut</th>
+            <th>Description</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -232,13 +193,13 @@
             <tr>
                 <td>{{ tache.id }}</td>
                 <td>{{ tache.type_machine }}</td>
-                <td>{{ tache.statut}}</td>
+                <td>{{ tache.description }}</td>
                 <td>
                     {% if tache.statut == 'en_attente' %}
                         <!-- Formulaire pour signaler la tâche terminée -->
                         <form method="POST" action="{% url 'kroschu_application:signaler_tache_terminee' tache.id %}">
                             {% csrf_token %}
-                            <button type="submit">Signaler la tâche terminée</button>
+                            <button type="submit">Valider</button>
                         </form>
                     {% endif %}
                 </td>

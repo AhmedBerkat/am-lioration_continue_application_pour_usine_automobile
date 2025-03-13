@@ -22,10 +22,10 @@
         <thead>
             <tr>
                 <th>ID Demande</th>
-                <th>User ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Type de Matériel</th>
+                <th>ID Utilisateur</th>
+                <th>Nom Prénom</th>
+                <th>Shift</th>
+                <th>Poste</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
                 <th>Temps écoulé</th>
@@ -38,10 +38,10 @@
             {% for demande in demandes %}
             <tr>
                 <td>{{ demande.id }}</td>
-                <td>{{ demande.user_id}}</td>
-                <td>{{ demande.user_id.nom }}</td>
-                <td>{{ demande.user_id.prenom }}</td>
-                <td>{{ demande.type_materiel }}</td>
+                <td>{{ demande.user_id.user_id}}</td>
+                <td>{{ demande.user_id.nom_prenom }}</td>
+                <td>{{ demande.user_id.shift }}</td>
+                <td>{{ demande.user_id.poste }}</td>
                 <td>{{ demande.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
                     <span class="statut {% if demande.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">

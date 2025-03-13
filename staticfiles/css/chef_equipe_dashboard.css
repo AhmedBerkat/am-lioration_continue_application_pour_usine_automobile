@@ -16,23 +16,21 @@ body {
     position: fixed;  /* Fixe l'élément en haut à droite de l'écran */
     top: 20px;
     right: 20px;
-    background: #6c757d;
+    background: #007BFF;
     color: white;
     padding: 8px 12px;
     border-radius: 5px;
     text-decoration: none;
     font-size: 14px;
     font-weight: bold;
-    
 }
-
 
 .logout-button i {
     margin-right: 5px;
 }
 
 .logout-button:hover {
-    background: #ff4d4d;
+    background: #0056b3;
 }
 
 /* ✅ Titre principal */
@@ -55,6 +53,14 @@ form {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     width: 50%;
     margin: 20px auto;
+}
+form textarea { 
+    width: 80%; /* Cette ligne élargit le champ de texte */
+    padding: 12px;
+    border-radius: 15px;
+    border: 2px solid #0c0c0c;
+    font-size: 16px;
+    height: 50px; /* Vous pouvez ajuster la hauteur en fonction de vos besoins */
 }
 
 form label {
@@ -121,7 +127,6 @@ table tr:hover {
 }
 
 .statut.en-attente {
-    
     font-weight: bold;
     background-color: red;
     color: white;
@@ -141,8 +146,31 @@ table td[colspan="8"] {
 
 /* Responsivité */
 @media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .logout-button {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
     form {
         width: 90%;
+        padding: 15px;
+    }
+
+    form textarea {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    form select, form button {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
     }
 
     table {
@@ -151,5 +179,14 @@ table td[colspan="8"] {
 
     table th, table td {
         padding: 10px;
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    h3 {
+        font-size: 16px;
     }
 }

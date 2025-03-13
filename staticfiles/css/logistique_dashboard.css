@@ -4,6 +4,7 @@
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
+
 body {
     background-color: #f4f4f4;
     padding: 20px;
@@ -12,10 +13,10 @@ body {
 
 /* Bouton de déconnexion */
 .logout-button {
-    position: fixed;  /* Fixe l'élément en haut à droite de l'écran */
+    position: fixed;
     top: 20px;
     right: 20px;
-    background: #6c757d;
+    background: #007BFF;
     color: white;
     padding: 8px 12px;
     border-radius: 5px;
@@ -29,9 +30,8 @@ body {
 }
 
 .logout-button:hover {
-    background: #ff4d4d;
+    background: #0056b3;
 }
-
 
 /* Style du statut */
 .statut {
@@ -54,23 +54,27 @@ body {
 /* Amélioration du tableau */
 table {
     width: 90%;
+    max-width: 100%;
     margin: 20px auto;
     border-collapse: collapse;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 th, td {
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
 }
 
 thead {
-    background-color:rgb(27, 221, 27);
+    background-color: rgb(27, 221, 27);
     color: white;
 }
+
 th {
     background-color: rgb(27, 221, 27);
     color: white;
@@ -109,3 +113,26 @@ h3 {
     margin-bottom: 15px;
 }
 
+/* Adaptabilité aux écrans mobiles */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    table {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .logout-button {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}

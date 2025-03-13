@@ -1,137 +1,180 @@
-/* Importation de la police */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
+/* Style général */
 body {
-    font-family: 'Roboto', sans-serif;
-    background: #fff;
-    color: #333;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
-    padding: 0;
+    padding: 1px;
+    overflow-x: hidden; /* Évite le scroll horizontal */
 }
-.logout-button {
-    position: fixed;  /* Fixe l'élément en haut à droite de l'écran */
-    top: 20px;
-    right: 20px;
-    background: #6c757d;
+
+/* Conteneur principal */
+.dashboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: auto;
+    gap: 8px;
+    padding: 1px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Style des sections */
+.section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Titres */
+h2, h3 {
+    text-align: center;
+}
+h2 {margin-bottom: 0px;
+    margin-top: 1px; 
+
+}
+
+h3 {
+    border: 2px solid green;
+    padding: 6px 12px;
+    background-color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    margin-top: 0px;
+}
+h4{
+    margin-bottom: 3px;
+    margin-top: 3px;
+
+}
+
+/* Boutons circulaires */
+.circle-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, opacity 0.3s;
+}
+
+.circle-button:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+/* Couleurs spécifiques */
+.demande-materiel-button { background-color: green; }
+.maintenance-button { background-color: navy; }
+.qualite-button { background-color: yellow; }
+.chef-button { background-color: red; }
+
+/* Tableaux */
+.history table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid black;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    border-radius: 5px;
+}
+
+.history th, .history td {
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.history th {
+    background-color: #5303bd;
     color: white;
-    padding: 8px 12px;
+}
+
+/* Bouton de déconnexion */
+.logout-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #007BFF;
+    color: white;
+    padding: 6px 10px;
     border-radius: 5px;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
-}
-
-.logout-button i {
-    margin-right: 5px;
 }
 
 .logout-button:hover {
-    background: #ff4d4d;
+    background: #0056b3;
 }
 
-h2, h3 {
-    text-align: center;
-    font-weight: bold;
-    border-radius: 7px;
-    padding: 8px; /* Augmenté */
-    margin: 4px 0;
-}
+/* Responsive */
+@media (max-width: 1024px) {
+    .dashboard-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .left-column, .right-column {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
 
-h2 { color: #030303; font-size: 24px; } /* Agrandi */
-h3 { background: #5e03f1; color: #e7e4e4; font-size: 22px; }
+    .circle-button {
+        width: 70px;
+        height: 70px;
+    }
 
-.section, .history {
-    background: #d1d0d0;
-    margin: 8px auto;
-    padding: 8px; /* Plus d'espace */
-    border-radius: 7px;
-    width: 98%; /* Presque toute la largeur */
-    max-width: 900px; /* Plus large */
-    box-shadow: 0 0 5px rgba(37, 37, 36, 0.6);
-}
-
-.options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px; /* Espacement augmenté */
-    justify-content: center;
-}
-
-.option {
-    flex: 1;
-    min-width: 150px; /* Plus large */
-    text-align: center;
-    padding: 12px; /* Augmenté */
-    border-radius: 7px;
-    font-weight: bold;
-    transition: 0.2s;
-    color: #fff;
-}
-
-.option:nth-child(1) { background: #2c3e50; }
-.option:nth-child(2) { background: #ffd700; color: #000; }
-.option:nth-child(3) { background: #ff0000; }
-
-form {
-    margin-top: 8px;
-    text-align: center;
-}
-
-label {
-    font-weight: bold;
-    font-size: 16px; /* Agrandi */
-}
-
-select, button {
-    width: 100%; /* Remplit toute la largeur */
-    padding: 8px; /* Plus d'espace */
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    text-align: center;
-}
-
-button {
-    background: #00ff3c;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-table {
-    width: 100%; /* Élargi au max */
-    border-collapse: collapse;
-    margin-top: 8px;
-    font-size: 16px; /* Agrandi */
-    border-radius: 4px;
-    background: #444;
-}
-
-th {
-    background: #6A0572;
-    color: #FFD700;
-    padding: 8px; /* Augmenté */
-}
-
-td {
-    border: 1px solid #080808;
-    padding: 8px; /* Augmenté */
-    text-align: center;
-    background: #d1cece;
-}
-
-tr:nth-child(even), tr:hover {
-    background: #d1cece;
+    h3 {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
 }
 
 @media (max-width: 768px) {
-    .options { flex-direction: column; }
-    .option { min-width: 100%; }
-    .section, .history { width: 98%; }
+    .left-column, .right-column {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .circle-button {
+        width: 65px;
+        height: 65px;
+    }
 }
 
-.demande-materiel { background: #00a833; color: white; }
-.Alertes { background: #800080; color: white; }
-.Maintenance { background: #2c3e50; color: white; }
-.Qualité { background: #ffd700; color: black; }
-.chef-dequipe { background: #ff0000; color: white; }
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 5px;
+    }
+
+    .history table {
+        font-size: 12px;
+    }
+
+    .history th, .history td {
+        padding: 6px;
+    }
+
+    .circle-button {
+        width: 60px;
+        height: 60px;
+    }
+}

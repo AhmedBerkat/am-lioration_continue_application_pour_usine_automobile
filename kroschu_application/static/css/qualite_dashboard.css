@@ -9,11 +9,13 @@ body {
     padding: 20px;
     text-align: center;
 }
+
+/* Bouton de déconnexion */
 .logout-button {
     position: fixed;  /* Fixe l'élément en haut à droite de l'écran */
     top: 20px;
     right: 20px;
-    background: #6c757d;
+    background: #007BFF;
     color: white;
     padding: 8px 12px;
     border-radius: 5px;
@@ -27,9 +29,8 @@ body {
 }
 
 .logout-button:hover {
-    background: #ff4d4d;
+    background: #0056b3;
 }
-
 
 /* Style du statut */
 .statut {
@@ -52,6 +53,7 @@ body {
 /* Amélioration du tableau */
 table {
     width: 90%;
+    max-width: 1000px;  /* Empêche le tableau de s'étirer excessivement sur les grands écrans */
     margin: 20px auto;
     border-collapse: collapse;
     background-color: #fff;
@@ -65,11 +67,7 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 
-thead {
-    background-color: rgb(197, 197, 40);
-    color: white;
-}
-th {
+thead, th {
     background-color: rgb(197, 197, 40);
     color: white;
 }
@@ -105,4 +103,40 @@ h2 {
 h3 {
     color: #df0909;
     margin-bottom: 15px;
+}
+
+/* ✅ Adaptation aux petits écrans */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .logout-button {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    table {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
 }

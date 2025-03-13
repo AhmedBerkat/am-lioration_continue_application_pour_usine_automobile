@@ -21,10 +21,10 @@
         <thead>
             <tr>
                 <th>ID Alerte</th>
-                <th>User ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Type de D'alerte</th>
+                <th>ID Utilisateur</th>
+                <th>Nom Prénom</th>
+                <th>Shift</th>
+                <th>Poste</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
                 <th>Temps écoulé</th>
@@ -36,9 +36,9 @@
             <tr>
                 <td>{{ alertemain.id }}</td>
                 <td>{{ alertemain.user_id }}</td>
-                <td>{{ alertemain.user_id.nom }}</td>
-                <td>{{ alertemain.user_id.prenom  }}</td>
-                <td>{{ alertemain.type_alertemain }}</td>
+                <td>{{ alertemain.user_id.nom_prenom }}</td>
+                <td>{{ alertemain.user_id.shift  }}</td>
+                <td>{{ alertemain.user_id.poste }}</td>
                 <td>{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
                     <span class="statut {% if alertemain.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">

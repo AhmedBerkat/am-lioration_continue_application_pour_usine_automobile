@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import render, redirect
 from .models import User
+from . import models
+from .models import *
 from django.utils.timezone import now
 from django.utils import timezone
 from django.shortcuts import  redirect
@@ -18,12 +20,13 @@ def home_view(request):
 def register_view(request):
     if request.method == 'POST':
         user_id = request.POST['user_id']
-        nom = request.POST['nom']
-        prenom = request.POST['prenom']
+        nom_prenom = request.POST['nom_prenom']
         role = request.POST['role']
+        poste = request.POST['poste']
+        shift = request.POST['shift']
         password = request.POST['password']
         
-        new_user = User(user_id=user_id, nom=nom, prenom=prenom, role=role, password=make_password(password))
+        new_user = User(user_id=user_id,nom_prenom=nom_prenom, role=role,poste=poste,shift=shift ,password=make_password(password))
         new_user.save()
         return redirect('kroschu_application:login_view')
     
@@ -80,22 +83,16 @@ def operateur_dashboard(request):
 @login_required
 def demande_materiel(request):
     if request.method == 'POST':
-        type_materiel = request.POST['type_materiel']
-        description = request.POST.get('description', '') 
-        Demande.objects.create(type_materiel=type_materiel,user_id=request.user,statut='en_attente',description=description)
+        Demande.objects.create(user_id=request.user,statut='en_attente')
         return redirect('kroschu_application:operateur_dashboard')
 
 @login_required
 def alerte_maintenance(request):
     if request.method == 'POST': 
-        type_alertemain = request.POST['type_alertemain']
-        description = request.POST.get('description', '')
         # Création de l'alerte dans la base de données
         Alertemain.objects.create(
-            type_alertemain=type_alertemain, 
             user_id=request.user, 
             statut='en_attente',
-            description=description,  
             
         )
         return redirect('kroschu_application:operateur_dashboard')
@@ -103,14 +100,10 @@ def alerte_maintenance(request):
 @login_required
 def alerte_chef(request):
     if request.method == 'POST':
-        type_alertechef = request.POST['type_alertechef']
-        description = request.POST.get('description', '')
         # Création de l'alerte dans la base de données
         Alertechef.objects.create(
-            type_alertechef=type_alertechef, 
             user_id=request.user,
             statut='en_attente',
-            description=description, 
                         
         )
         return redirect('kroschu_application:operateur_dashboard')
@@ -118,12 +111,8 @@ def alerte_chef(request):
 @login_required
 def alerte_qualite(request):
     if request.method == 'POST':
-        type_alertequal = request.POST['type_alertequal']
-        description = request.POST.get('description', '')
         # Création de l'alerte dans la base de données
         Alertequal.objects.create(
-            type_alertequal=type_alertequal, 
-            description=description, 
             user_id=request.user, 
             statut='en_attente', 
             
@@ -134,27 +123,68 @@ def alerte_qualite(request):
 
 @login_required
 def logistique_dashboard(request):
-    demandes = Demande.objects.all().order_by('-created_at') 
+    demandes = Demande.objects.all().order_by(
+        models.Case(
+            models.When(statut="en_attente", then=0),
+            models.When(statut="traite", then=1),
+            default=2,
+            output_field=models.IntegerField()
+        ),
+        "-created_at"
+    )
+
     return render(request, 'logistique_dashboard.html', {'demandes': demandes})
 
 
 
 @login_required
 def maintenance_dashboard(request):
-    alertemains = Alertemain.objects.all().order_by('-created_at')
+    alertemains = Alertemain.objects.all().order_by(
+        models.Case(
+            models.When(statut="en_attente", then=0),
+            models.When(statut="traite", then=1),
+            default=2,
+            output_field=models.IntegerField()
+        ),
+        "-created_at"
+    )
     return render(request, 'maintenance_dashboard.html', {'alertemains': alertemains})
 
 @login_required
 def qualite_dashboard(request):
-    alertequals = Alertequal.objects.all().order_by('-created_at')
+    alertequals = Alertequal.objects.all().order_by(
+        models.Case(
+            models.When(statut="en_attente", then=0),
+            models.When(statut="traite", then=1),
+            default=2,
+            output_field=models.IntegerField()
+        ),
+        "-created_at"
+    )
     return render(request, 'qualite_dashboard.html', {'alertequals': alertequals})
 
 
 @login_required
 def chef_equipe_dashboard(request):
     operateurs = User.objects.all().order_by('-created_at')
-    taches = Tache.objects.all().order_by('-created_at')
-    alertechefs = Alertechef.objects.all().order_by('-created_at')
+    taches = Tache.objects.all().order_by(
+        models.Case(
+            models.When(statut="en_attente", then=0),
+            models.When(statut="traite", then=1),
+            default=2,
+            output_field=models.IntegerField()
+        ),
+        "-created_at"
+    )
+    alertechefs = Alertechef.objects.all().order_by(
+        models.Case(
+            models.When(statut="en_attente", then=0),
+            models.When(statut="traite", then=1),
+            default=2,
+            output_field=models.IntegerField()
+        ),
+        "-created_at"
+    )
     return render(request, 'chef_equipe_dashboard.html', {
         'taches': taches,
         'operateurs': operateurs,
@@ -194,16 +224,16 @@ def affecter_tache(request):
         # Récupérer les données du formulaire
         user_id = request.POST.get('user_id')
         type_machine = request.POST.get('type_machine')
-
-        # Récupérer l'opérateur choisi
-        operateur = User.objects.get(user_id=user_id)
-
-        # Créer une nouvelle tâche pour cet opérateur
-        nouvelle_tache = Tache.objects.create(
-            user_id=operateur,  # Affectation de la tâche à l'opérateur
-            type_machine=type_machine,
-            statut='en_attente',  # Statut initial de la tâche
-        )
+        description=request.POST.get('description', '')
+        if user_id and type_machine and description:
+            operateur = User.objects.get(user_id=user_id)
+            tache = Tache.objects.create(
+                user_id=operateur,
+                type_machine=type_machine,
+                description=description,
+                statut="en_attente",
+            )
+            tache.save()
 
         return redirect('kroschu_application:chef_equipe_dashboard')  # Rediriger vers le tableau de bord du chef d'équipe
 
