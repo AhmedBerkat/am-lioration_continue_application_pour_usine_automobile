@@ -43,10 +43,8 @@
         <thead>
             <tr>
                 <th>ID Tâche</th>
-                <th>ID Utilisateur</th>
-                <th>Nom Prénom</th>
-                <th>Shift</th>
                 <th>Poste</th>
+                <th>Shift</th>
                 <th>Type de machine</th>
                 <th>Description</th>
                 <th>Date de Création</th>
@@ -60,10 +58,8 @@
             {% for tache in taches %}
             <tr>
                 <td>{{ tache.id }}</td>
-                <td>{{ tache.user_id.user_id }}</td>
-                <td>{{ tache.user_id.nom_prenom }}</td>
-                <td>{{ tache.user_id.shift }}</td>
-                <td>{{ tache.user_id.poste }}</td>
+                <td>{{ tache.poste.poste }}</td>
+                <td>{{ tache.poste.shift }}</td>
                 <td>{{ tache.type_machine }}</td>
                 <td>{{ tache.description }}</td>
                 <td>{{ tache.created_at|date:"d/m/Y H:i" }}</td>
@@ -96,10 +92,8 @@
         <thead>
             <tr>
                 <th>ID Alerte</th>
-                <th>ID Utilisateur</th>
-                <th>Nom Prénom</th>
-                <th>Shift</th>
                 <th>Poste</th>
+                <th>Shift</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
                 <th>Temps écoulé</th>
@@ -110,10 +104,16 @@
             {% for alertechef in alertechefs%}
             <tr>
                 <td>{{ alertechef.id }}</td>
-                <td>{{ alertechef.user_id }}</td>
-                <td>{{ alertechef.user_id.nom_prenom }}</td>
-                <td>{{ alertechef.user_id.shift }}</td>
-                <td>{{ alertechef.user_id.poste }}</td>
+                <td>{{ alertechef.poste }}</td>
+                <td>
+                    {% if alertechef.poste.shift == 'A' %}
+                        A 
+                    {% elif alertechef.poste.shift == 'B' %}
+                        B 
+                    {% else %}
+                        C 
+                    {% endif %}
+                </td>
                 <td>{{ alertechef.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
                     <span class="statut {% if alertechef.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
@@ -137,6 +137,10 @@
         </tbody>
     </table>
     
-
+    <script>
+        setInterval(function() {
+            location.reload();
+        }, 1000);  // Actualisation toutes les 1000 ms (1 seconde)
+    </script>
 </body>
 </html>

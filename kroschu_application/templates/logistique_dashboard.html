@@ -22,10 +22,8 @@
         <thead>
             <tr>
                 <th>ID Demande</th>
-                <th>ID Utilisateur</th>
-                <th>Nom Prénom</th>
-                <th>Shift</th>
                 <th>Poste</th>
+                <th>Shift</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
                 <th>Temps écoulé</th>
@@ -38,10 +36,16 @@
             {% for demande in demandes %}
             <tr>
                 <td>{{ demande.id }}</td>
-                <td>{{ demande.user_id.user_id}}</td>
-                <td>{{ demande.user_id.nom_prenom }}</td>
-                <td>{{ demande.user_id.shift }}</td>
-                <td>{{ demande.user_id.poste }}</td>
+                <td>{{ demande.poste.poste}}</td>
+                <td>
+                    {% if demande.poste.shift == 'A' %}
+                        A 
+                    {% elif demande.poste.shift == 'B' %}
+                        B 
+                    {% else %}
+                        C 
+                    {% endif %}
+                </td>
                 <td>{{ demande.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
                     <span class="statut {% if demande.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
@@ -67,6 +71,12 @@
             {% endfor %}
         </tbody>
     </table>
-    
+    <script>
+        setInterval(function() {
+            location.reload();
+        }, 1000);  // Actualisation toutes les 1000 ms (1 seconde)
+    </script>
 </body>
+
+
 </html>

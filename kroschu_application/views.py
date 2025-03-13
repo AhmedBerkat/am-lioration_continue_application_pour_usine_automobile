@@ -19,14 +19,14 @@ def home_view(request):
 
 def register_view(request):
     if request.method == 'POST':
-        user_id = request.POST['user_id']
-        nom_prenom = request.POST['nom_prenom']
-        role = request.POST['role']
         poste = request.POST['poste']
-        shift = request.POST['shift']
+      
+        role = request.POST['role']
+       
+        
         password = request.POST['password']
         
-        new_user = User(user_id=user_id,nom_prenom=nom_prenom, role=role,poste=poste,shift=shift ,password=make_password(password))
+        new_user = User(poste=poste, role=role,password=make_password(password))
         new_user.save()
         return redirect('kroschu_application:login_view')
     
@@ -34,10 +34,10 @@ def register_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        user_id = request.POST['user_id']
+        poste = request.POST['poste']
         password = request.POST['password']
         
-        user = authenticate(request, username=user_id, password=password)
+        user = authenticate(request, username=poste, password=password)
         if user is not None:
             login(request, user)
             if user.role == 'operateur':
@@ -63,12 +63,12 @@ def logout_view(request):
 @login_required
 def operateur_dashboard(request):
     operateur = request.user
-    taches = Tache.objects.filter(user_id=operateur).filter(statut='en_attente')
-    demandes = Demande.objects.filter(user_id=operateur).filter(statut='en_attente')
+    taches = Tache.objects.filter(poste=operateur).filter(statut='en_attente')
+    demandes = Demande.objects.filter(poste=operateur).filter(statut='en_attente')
     
-    alertemains =Alertemain.objects.filter(user_id=operateur).filter(statut='en_attente')
-    alertequals=Alertequal.objects.filter(user_id=operateur).filter(statut='en_attente')
-    alertechefs =Alertechef.objects.filter(user_id=operateur).filter(statut='en_attente')
+    alertemains =Alertemain.objects.filter(poste=operateur).filter(statut='en_attente')
+    alertequals=Alertequal.objects.filter(poste=operateur).filter(statut='en_attente')
+    alertechefs =Alertechef.objects.filter(poste=operateur).filter(statut='en_attente')
 
     # Passer ces données au template
     context = {
@@ -83,7 +83,7 @@ def operateur_dashboard(request):
 @login_required
 def demande_materiel(request):
     if request.method == 'POST':
-        Demande.objects.create(user_id=request.user,statut='en_attente')
+        Demande.objects.create(poste=request.user,statut='en_attente')
         return redirect('kroschu_application:operateur_dashboard')
 
 @login_required
@@ -91,7 +91,7 @@ def alerte_maintenance(request):
     if request.method == 'POST': 
         # Création de l'alerte dans la base de données
         Alertemain.objects.create(
-            user_id=request.user, 
+            poste=request.user, 
             statut='en_attente',
             
         )
@@ -102,7 +102,7 @@ def alerte_chef(request):
     if request.method == 'POST':
         # Création de l'alerte dans la base de données
         Alertechef.objects.create(
-            user_id=request.user,
+            poste=request.user,
             statut='en_attente',
                         
         )
@@ -113,7 +113,7 @@ def alerte_qualite(request):
     if request.method == 'POST':
         # Création de l'alerte dans la base de données
         Alertequal.objects.create(
-            user_id=request.user, 
+            poste=request.user, 
             statut='en_attente', 
             
         )
@@ -199,7 +199,7 @@ def valider_demande(request, demande_id):
         demande = Demande.objects.get(id=demande_id)
 
         # Vérifier que la demande appartient à l'utilisateur
-        if demande.user_id == request.user and demande.statut == 'en_attente':
+        if demande.poste == request.user and demande.statut == 'en_attente':
             # Mettre à jour le statut de la demande
             demande.statut = 'traité'
             demande.validated_at = now()
@@ -222,13 +222,13 @@ def affecter_tache(request):
 
     if request.method == "POST":
         # Récupérer les données du formulaire
-        user_id = request.POST.get('user_id')
+        poste = request.POST.get('poste')
         type_machine = request.POST.get('type_machine')
         description=request.POST.get('description', '')
-        if user_id and type_machine and description:
-            operateur = User.objects.get(user_id=user_id)
+        if poste and type_machine and description:
+            operateur = User.objects.get(poste=poste)
             tache = Tache.objects.create(
-                user_id=operateur,
+                poste=operateur,
                 type_machine=type_machine,
                 description=description,
                 statut="en_attente",
@@ -246,7 +246,7 @@ def affecter_tache(request):
 def signaler_tache_terminee(request, tache_id):
     try:
         tache = Tache.objects.get(id=tache_id)
-        if tache.user_id == request.user and tache.statut == 'en_attente':  # Vérifie si la tâche appartient à l'utilisateur connecté
+        if tache.poste == request.user and tache.statut == 'en_attente':  # Vérifie si la tâche appartient à l'utilisateur connecté
             tache.statut = 'traité'
             tache.validated_at = now()
             tache.save()
@@ -263,7 +263,7 @@ def signaler_tache_terminee(request, tache_id):
 def valider_alerte_maintenance(request, alertemain_id):
     try:
         alertemain = Alertemain.objects.get(id=alertemain_id)
-        if alertemain.user_id == request.user and alertemain.statut == 'en_attente':  # Vérifie si la tâche appartient à l'utilisateur connecté
+        if alertemain.poste == request.user and alertemain.statut == 'en_attente':  # Vérifie si la tâche appartient à l'utilisateur connecté
             alertemain.statut = 'traité'
             alertemain.validated_at = now()
             alertemain.save()
@@ -280,7 +280,7 @@ def valider_alerte_maintenance(request, alertemain_id):
 def valider_alerte_qualite(request, alertequal_id):
     try:
         alertequal = Alertequal.objects.get(id=alertequal_id)
-        if alertequal.user_id == request.user and alertequal.statut == 'en_attente':  # Vérifie si la tâche appartient à l'utilisateur connecté
+        if alertequal.poste == request.user and alertequal.statut == 'en_attente':  # Vérifie si la tâche appartient à l'utilisateur connecté
             alertequal.statut = 'traité'
             alertequal.validated_at = now()
             alertequal.save()
@@ -297,7 +297,7 @@ def valider_alerte_qualite(request, alertequal_id):
 def valider_alerte_chef(request, alertechef_id):
     try:
         alertechef = Alertechef.objects.get(id=alertechef_id)
-        if alertechef.user_id == request.user and alertechef.statut == 'en_attente':  # Vérifie si la tâche appartient à l'utilisateur connecté
+        if alertechef.poste == request.user and alertechef.statut == 'en_attente':  # Vérifie si la tâche appartient à l'utilisateur connecté
             alertechef.statut = 'traité'
             alertechef.validated_at = now()
             alertechef.save()

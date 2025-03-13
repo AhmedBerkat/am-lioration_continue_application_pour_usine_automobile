@@ -21,10 +21,8 @@
         <thead>
             <tr>
                 <th>ID Alerte</th>
-                <th>ID Utilisateur</th>
-                <th>Nom Prénom</th>
-                <th>Shift</th>
                 <th>Poste</th>
+                <th>Shift</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
                 <th>Temps écoulé</th>
@@ -35,10 +33,16 @@
             {% for alertemain in alertemains %}
             <tr>
                 <td>{{ alertemain.id }}</td>
-                <td>{{ alertemain.user_id }}</td>
-                <td>{{ alertemain.user_id.nom_prenom }}</td>
-                <td>{{ alertemain.user_id.shift  }}</td>
-                <td>{{ alertemain.user_id.poste }}</td>
+                <td>{{ alertemain.poste }}</td>
+                <td>
+                    {% if alertemain.poste.shift == 'A' %}
+                        A 
+                    {% elif alertemain.poste.shift == 'B' %}
+                        B 
+                    {% else %}
+                        C 
+                    {% endif %}
+                </td>
                 <td>{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
                     <span class="statut {% if alertemain.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
@@ -62,7 +66,11 @@
         </tbody>
     </table>
     
-    
+    <script>
+        setInterval(function() {
+            location.reload();
+        }, 1000);  // Actualisation toutes les 1000 ms (1 seconde)
+    </script>
 
 </body>
 </html>
