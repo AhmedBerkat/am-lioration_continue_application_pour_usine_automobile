@@ -86,21 +86,14 @@ body {
     text-decoration: none;
     margin: 10px;
     transition: all 0.3s ease-in-out;
+    text-align: center;
 }
 
-.primary {
-    background: #007bff;
-    color: white;
-}
-
-.primary:hover {
-    background: #0056b3;
-    transform: scale(1.05);
-}
 
 .secondary {
     background: #6c757d;
     color: white;
+    text-align: center;
 }
 
 .secondary:hover {

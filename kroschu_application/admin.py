@@ -11,43 +11,91 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 
 # Admin pour Demande
+
+# Filtre personnalisé pour les demandes traitées et non traitées
+class StatutDemandeFilter(admin.SimpleListFilter):
+    title = 'Statut de la demande'
+    parameter_name = 'statut_demande'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('traite', 'Demandes traitées'),
+            ('en_attente', 'Demandes non traitées'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'traite':
+            return queryset.filter(statut='traite')  # Remplacer 'traite' par le statut correspondant
+        if self.value() == 'en_attente':
+            return queryset.filter(statut='en_attente')  # Remplacer 'non_traite' par le statut correspondant
+        return queryset
+
+# Admin pour Demande
 class DemandeAdmin(admin.ModelAdmin):
-    list_display = ('poste', 'statut', 'created_at')  # Affiche les champs dans la liste
+    list_display = ('poste','statut', 'created_at','validated_at')  # Affiche les champs dans la liste
+    list_filter = (StatutDemandeFilter, 'statut')  # Ajoute un filtre personnalisé pour les demandes traitées ou non traitées
     list_editable = ('statut',)  # Permet d'éditer directement le statut dans l'interface admin
-    list_filter = ('statut',)  # Ajoute un filtre par statut
-    search_fields = ('demande.id',)  # Permet de rechercher par type de matériel
+    search_fields = ('poste',)  # Permet de rechercher par poste
+
+    # Personnalisation pour rendre la table plus lisible
+    ordering = ('-created_at',)  # Tri les demandes par date de création, de la plus récente à la plus ancienne
+    date_hierarchy = 'created_at'  # Permet d'ajouter une hiérarchie de dates pour un meilleur filtrage
 
 admin.site.register(Demande, DemandeAdmin)
 
-# Admin pour Alerte
+
+class StatutAlerteFilter(admin.SimpleListFilter):
+    title = 'Statut de l\'alerte'
+    parameter_name = 'statut_alerte'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('traite', 'Alertes traitées'),
+            ('non_traite', 'Alertes non traitées'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'traite':
+            return queryset.filter(statut='traite')  # Remplacer 'traite' par le statut correspondant
+        if self.value() == 'non_traite':
+            return queryset.filter(statut='non_traite')  # Remplacer 'non_traite' par le statut correspondant
+        return queryset
+
+# Admin pour Alertemain
 class AlertemainAdmin(admin.ModelAdmin):
     list_display = ('poste', 'statut', 'created_at')  # Affiche les champs dans la liste
+    list_filter = (StatutAlerteFilter, 'statut')  # Ajoute le filtre personnalisé pour les alertes traitées ou non traitées
     list_editable = ('statut',)  # Permet d'éditer directement le statut dans l'interface admin
-    list_filter = ('statut',)  # Ajoute un filtre par statut
-    search_fields = ('alertemain.id',)  # Permet de rechercher par type d'alerte
+    search_fields = ('poste',)  # Permet de rechercher par poste
+
+    # Personnalisation pour rendre la table plus lisible
+    ordering = ('-created_at',)  # Tri les alertes par date de création, de la plus récente à la plus ancienne
+    date_hierarchy = 'created_at'  # Permet d'ajouter une hiérarchie de dates pour un meilleur filtrage
 
 admin.site.register(Alertemain, AlertemainAdmin)
 
+# Admin pour Alertequal
 class AlertequalAdmin(admin.ModelAdmin):
     list_display = ('poste', 'statut', 'created_at')  # Affiche les champs dans la liste
+    list_filter = (StatutAlerteFilter, 'statut')  # Ajoute le filtre personnalisé pour les alertes traitées ou non traitées
     list_editable = ('statut',)  # Permet d'éditer directement le statut dans l'interface admin
-    list_filter = ('statut',)  # Ajoute un filtre par statut
-    search_fields = ('alertequal.id',)  # Permet de rechercher par type d'alerte
+    search_fields = ('poste',)  # Permet de rechercher par poste
+
+    # Personnalisation pour rendre la table plus lisible
+    ordering = ('-created_at',)  # Tri les alertes par date de création, de la plus récente à la plus ancienne
+    date_hierarchy = 'created_at'  # Permet d'ajouter une hiérarchie de dates pour un meilleur filtrage
 
 admin.site.register(Alertequal, AlertequalAdmin)
 
+# Admin pour Alertechef
 class AlertechefAdmin(admin.ModelAdmin):
     list_display = ('poste', 'statut', 'created_at')  # Affiche les champs dans la liste
+    list_filter = (StatutAlerteFilter, 'statut')  # Ajoute le filtre personnalisé pour les alertes traitées ou non traitées
     list_editable = ('statut',)  # Permet d'éditer directement le statut dans l'interface admin
-    list_filter = ('statut',)  # Ajoute un filtre par statut
-    search_fields = ('alertechef.id',)  # Permet de rechercher par type d'alerte
+    search_fields = ('poste',)  # Permet de rechercher par poste
+
+    # Personnalisation pour rendre la table plus lisible
+    ordering = ('-created_at',)  # Tri les alertes par date de création, de la plus récente à la plus ancienne
+    date_hierarchy = 'created_at'  # Permet d'ajouter une hiérarchie de dates pour un meilleur filtrage
 
 admin.site.register(Alertechef, AlertechefAdmin)
-# Admin pour Tache
-class TacheAdmin(admin.ModelAdmin):
-    list_display = ('poste', 'type_machine', 'statut', 'created_at')  # Affiche les champs dans la liste
-    list_editable = ('statut',)  # Permet d'éditer directement le statut dans l'interface admin
-    list_filter = ('statut',)  # Ajoute un filtre par statut
-    search_fields = ('type_machine',)  # Permet de rechercher par type de machine
-
-admin.site.register(Tache, TacheAdmin)

@@ -45,10 +45,11 @@
                 </td>
                 <td>{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
-                    <span class="statut {% if alertemain.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
+                    <span id="statut-{{ alertemain.id }}" class="statut {% if alertemain.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
                         {{ alertemain.statut }}
                     </span>
                 </td>
+                
                 <td>
                     {% if alertemain.temps_de_traitement %}
                         {{ alertemain.temps_de_traitement|floatformat:2 }}
@@ -67,10 +68,24 @@
     </table>
     
     <script>
-        setInterval(function() {
-            location.reload();
-        }, 1000);  // Actualisation toutes les 1000 ms (1 seconde)
+        function mettreAJourStatuts() {
+            fetch("{% url 'kroschu_application:api_liste_alertes_maintenance' %}")  // Remplacez par l'URL correcte
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(alertemain => {
+                        let statutElement = document.getElementById(`statut-${alertemain.id}`);
+                        if (statutElement && statutElement.innerText !== alertemain.statut) {
+                            statutElement.innerText = alertemain.statut;
+                            statutElement.className = `statut ${alertemain.statut === 'en_attente' ? 'en-attente' : 'traite'}`;
+                        }
+                    });
+                })
+                .catch(error => console.error("Erreur lors de la mise à jour :", error));
+        }
+    
+        setInterval(mettreAJourStatuts, 1000);  // Mise à jour toutes les secondes
     </script>
+    
 
 </body>
 </html>

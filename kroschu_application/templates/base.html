@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+    {% include 'navbar.html' %}
+        {% block content %}
+        <!-- Le contenu specifique à chaque page sera inséré ici -->
+        {% endblock %}
+        <h4>Bienvenue chez <span>Kromberg & Schubert</span></h4>
+            <p>Leader dans l'innovation et la fabrication de faisceaux électriques.</p>
+</body>

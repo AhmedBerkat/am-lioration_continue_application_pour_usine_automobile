@@ -12,78 +12,6 @@
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
     <h2>Bienvenue, Chef d'Équipe</h2>
-
-    <!-- Formulaire pour affecter une tâche -->
-    <h3>Affecter une Tâche à un Opérateur</h3>
-    <form method="POST" action="{% url 'kroschu_application:affecter_tache' %}">
-        {% csrf_token %}
-        <label for="user_id">Choisissez un Opérateur :</label>
-        <select name="user_id" id="user_id">
-            {% for operateur in operateurs %}
-                <option value="{{ operateur.user_id }}">{{ operateur.user_id }} - Shift : {{ operateur.shift }}   - Poste :  {{ operateur.poste }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="type_machine">Choisissez le type de machine :</label>
-        <select name="type_machine" id="type_machine">
-            <option value="soudage">Soudage</option>
-            <option value="sertissage">Sertissage</option>
-        </select>
-        <div id="description">
-            <label for="description">Description :</label>
-            <textarea name="description" id="description"></textarea>
-        </div>
-    
-        <button type="submit">Affecter la tâche</button>
-    </form>
-
-    <!-- Liste des Tâches en attente -->
-    <h3>Liste des Tâches  </h3>
-    <table>
-        <thead>
-            <tr>
-                <th>ID Tâche</th>
-                <th>Poste</th>
-                <th>Shift</th>
-                <th>Type de machine</th>
-                <th>Description</th>
-                <th>Date de Création</th>
-                <th>Statut</th>
-                <th>Temps écoulé</th>
-                
-                
-            </tr>
-        </thead>
-        <tbody>
-            {% for tache in taches %}
-            <tr>
-                <td>{{ tache.id }}</td>
-                <td>{{ tache.poste.poste }}</td>
-                <td>{{ tache.poste.shift }}</td>
-                <td>{{ tache.type_machine }}</td>
-                <td>{{ tache.description }}</td>
-                <td>{{ tache.created_at|date:"d/m/Y H:i" }}</td>
-
-                <td>
-                    <span class="statut {% if tache.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
-                        {{ tache.statut }}
-                    </span>
-                </td>
-                <td>
-                    {% if tache.temps_de_traitement %}
-                        {{ tache.temps_de_traitement|floatformat:2 }}
-                    {% else %}
-                        En attente
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">Aucune tâche en attente</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
     <h3>Demande au chef de se rendre sur place.</h3>
     <h3>Liste des alertes de chef d'equipe</h3>
     
@@ -138,9 +66,22 @@
     </table>
     
     <script>
-        setInterval(function() {
-            location.reload();
-        }, 1000);  // Actualisation toutes les 1000 ms (1 seconde)
+        function mettreAJourStatuts() {
+            fetch("{% url 'kroschu_application:api_liste_alertes_chef' %}")  // Remplacez par l'URL correcte
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(alertechef => {
+                        let statutElement = document.getElementById(`statut-${alertechef.id}`);
+                        if (statutElement && statutElement.innerText !== alertechef.statut) {
+                            statutElement.innerText = alertechef.statut;
+                            statutElement.className = `statut ${alertechef.statut === 'en_attente' ? 'en-attente' : 'traite'}`;
+                        }
+                    });
+                })
+                .catch(error => console.error("Erreur lors de la mise à jour :", error));
+        }
+    
+        setInterval(mettreAJourStatuts, 1000);  // Mise à jour toutes les secondes
     </script>
 </body>
 </html>

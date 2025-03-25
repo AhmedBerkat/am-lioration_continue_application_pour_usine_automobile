@@ -1,12 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect ,get_object_or_404
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import User, Demande,Alertemain,Alertequal, Alertechef,Tache
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import render, redirect
 from .models import User
+from django.db.models import Q
+import csv
+from django.http import HttpResponse
+
 from . import models
 from .models import *
 from django.utils.timezone import now
@@ -14,7 +18,7 @@ from django.utils import timezone
 from django.shortcuts import  redirect
 from datetime import timedelta
 from django.contrib.auth import logout
-def home_view(request):
+def home(request):
     return render(request, 'home.html')
 
 def register_view(request):
@@ -31,6 +35,7 @@ def register_view(request):
         return redirect('kroschu_application:login_view')
     
     return render(request, 'register.html')
+    
 
 def login_view(request):
     if request.method == 'POST':
@@ -40,7 +45,9 @@ def login_view(request):
         user = authenticate(request, username=poste, password=password)
         if user is not None:
             login(request, user)
-            if user.role == 'operateur':
+            if user.is_superuser:  # Si l'utilisateur est un superutilisateur
+                return redirect('kroschu_application:admin_postes')
+            elif user.role == 'operateur':
                 return redirect('kroschu_application:operateur_dashboard')
             elif user.role == 'logistique':
                 return redirect('kroschu_application:logistique_dashboard')
@@ -58,7 +65,28 @@ def login_view(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('kroschu_application:home_view') 
+    return redirect('kroschu_application:home') 
+
+
+@login_required
+def admin_dashboard(request):
+    if not request.user.is_superuser:
+        return redirect('kroschu_application:home')  # Empêcher l'accès aux non-admins
+    
+    demandes = Demande.objects.all()
+    alertemains = Alertemain.objects.all()
+    alertequals = Alertequal.objects.all()
+    alertechefs = Alertechef.objects.all()
+    taches = Tache.objects.all()
+
+    context = {
+        'demandes': demandes,
+        'alertemains': alertemains,
+        'alertequals': alertequals,
+        'alertechefs': alertechefs,
+        'taches': taches
+    }
+    return render(request, 'admin_dashboard.html', context)
 
 @login_required
 def operateur_dashboard(request):
@@ -310,9 +338,359 @@ def valider_alerte_chef(request, alertechef_id):
     
     return redirect('kroschu_application:operateur_dashboard')  # Redirection après avoir modifié la tâche
 
+##################################################################################################################
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_dashboard(request):
+    # Filtres personnalisés
+    statut_filter = request.GET.get('statut')
+    poste_filter = request.GET.get('poste')
+    date_filter = request.GET.get('date')
+    
+    demandes = Demande.objects.filter(is_deleted=False)
+    alertemains = Alertemain.objects.filter(is_deleted=False)
+    alertequals = Alertequal.objects.filter(is_deleted=False)
+    alertechefs = Alertechef.objects.filter(is_deleted=False)
+    users = User.objects.filter(is_deleted=False)
+
+    # Application des filtres
+    if statut_filter:
+        demandes = demandes.filter(statut=statut_filter)
+        alertemains = alertemains.filter(statut=statut_filter)
+        alertequals = alertequals.filter(statut=statut_filter)
+        alertechefs = alertechefs.filter(statut=statut_filter)
+    if poste_filter:
+        demandes = demandes.filter(poste__poste__icontains=poste_filter)
+        alertemains = alertemains.filter(poste__poste__icontains=poste_filter)
+        alertequals = alertequals.filter(poste__poste__icontains=poste_filter)
+        alertechefs = alertechefs.filter(poste__poste__icontains=poste_filter)
+        
+    if date_filter:
+        demandes = demandes.filter(created_at__date=date_filter)
+        alertemains = alertemains.filter(created_at__date=date_filter)
+        alertequals = alertequals.filter(created_at__date=date_filter)
+        alertechefs = alertechefs.filter(created_at__date=date_filter)
+
+    context = {
+        'demandes': demandes,
+        'alertemains': alertemains,
+        'alertequals': alertequals,
+        'alertechefs': alertechefs,
+        'users': users,
+        'statut_choices': Demande.STATUT_CHOICES,
+        'statut_choices': Alertemain.STATUT_CHOICES,
+        'statut_choices': Alertequal.STATUT_CHOICES,
+        'statut_choices': Alertechef.STATUT_CHOICES
+
+    }
+    return render(request, 'admin_dashboard.html', context)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def add_poste(request):
+    if request.method == 'POST':
+        poste = request.POST['poste']
+      
+        role = request.POST['role']
+       
+        
+        password = request.POST['password']
+        
+        new_user = User(poste=poste, role=role,password=make_password(password))
+        new_user.save()
+        return redirect('kroschu_application:admin_postes')
+    
+    return render(request, 'admin_postes.html')
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def soft_deleteposte(request, model_name,poste):
+    models_map = {
+        'user': User,
+    }
+    model = models_map.get(model_name)
+    if model:
+        obj = get_object_or_404(model, poste=poste)  # Recherche par ID au lieu de 'poste'
+        obj.is_deleted = True
+        obj.save()
+
+    return redirect('kroschu_application:admin_postes') 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def soft_deletedem(request, model_name, id):
+    models_map = {
+        'demande': ('Demande', 'kroschu_application:admin_demandes'),
+        'alertemain': ('Alertemain', 'kroschu_application:admin_alertes_maintenance'),
+        'alertequal': ('Alertequal', 'kroschu_application:admin_alertes_qualite'),
+        'alertechef': ('Alertechef', 'kroschu_application:admin_alertes_chef'),
+    }
+
+    model_info = models_map.get(model_name)
+    
+    if model_info:
+        model_class = globals()[model_info[0]]  # Récupère la classe du modèle via son nom
+        obj = get_object_or_404(model_class, id=id)
+        obj.is_deleted = True
+        obj.save()
+        return redirect(model_info[1])  # Redirection dynamique selon le modèle
+
+    return redirect('kroschu_application:admin_demandes') 
 
 
 
+        
+
+#######################################################################################################
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_postes(request):
+    # Récupérer tous les postes
+    postes = User.objects.filter(is_deleted=False)
+
+    if request.method == 'POST':
+        # Ajouter un nouveau poste
+        poste = request.POST.get('poste')
+        role = request.POST.get('role')
+        password = request.POST.get('password')
+        User.objects.create_user(poste=poste, role=role, password=password)
+        return redirect('kroschu_application:admin_postes')
+
+    context = {
+        'postes': postes,
+    }
+    return render(request, 'admin_postes.html', context)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_demandes(request):
+    # Filtres pour les demandes
+    statut_filter = request.GET.get('statut')
+    poste_filter = request.GET.get('poste')
+    date_filter = request.GET.get('date')
+
+    demandes = Demande.objects.filter(is_deleted=False)
+    if statut_filter:
+        demandes = demandes.filter(statut=statut_filter)
+    if poste_filter:
+        demandes = demandes.filter(poste__poste__icontains=poste_filter)
+    if date_filter:
+        demandes = demandes.filter(created_at__date=date_filter)
+
+    context = {
+        'demandes': demandes,
+    }
+    return render(request, 'admin_demandes.html', context)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_alertes_maintenance(request):
+    # Filtres pour les alertes maintenance
+    statut_filter = request.GET.get('statut')
+    poste_filter = request.GET.get('poste')
+    date_filter = request.GET.get('date')
+
+    alertemains = Alertemain.objects.filter(is_deleted=False)
+    if statut_filter:
+        alertemains = alertemains.filter(statut=statut_filter)
+    if poste_filter:
+        alertemains = alertemains.filter(poste__poste__icontains=poste_filter)
+    if date_filter:
+        alertemains = alertemains.filter(created_at__date=date_filter)
+
+    context = {
+        'alertemains': alertemains,
+    }
+    return render(request, 'admin_alertes_maintenance.html', context)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_alertes_qualite(request):
+    # Filtres pour les alertes qualité
+    statut_filter = request.GET.get('statut')
+    poste_filter = request.GET.get('poste')
+    date_filter = request.GET.get('date')
+
+    alertequals = Alertequal.objects.filter(is_deleted=False)
+    if statut_filter:
+        alertequals = alertequals.filter(statut=statut_filter)
+    if poste_filter:
+        alertequals = alertequals.filter(poste__poste__icontains=poste_filter)
+    if date_filter:
+        alertequals = alertequals.filter(created_at__date=date_filter)
+
+    context = {
+        'alertequals': alertequals,
+    }
+    return render(request, 'admin_alertes_qualite.html', context)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_alertes_chef(request):
+    # Filtres pour les alertes chef d'équipe
+    statut_filter = request.GET.get('statut')
+    poste_filter = request.GET.get('poste')
+    date_filter = request.GET.get('date')
+
+    alertechefs = Alertechef.objects.filter(is_deleted=False)
+    if statut_filter:
+        alertechefs = alertechefs.filter(statut=statut_filter)
+    if poste_filter:
+        alertechefs = alertechefs.filter(poste__poste__icontains=poste_filter)
+    if date_filter:
+        alertechefs = alertechefs.filter(created_at__date=date_filter)
+
+    context = {
+        'alertechefs': alertechefs,
+    }
+    return render(request, 'admin_alertes_chef.html', context)
+
+
+from django.http import JsonResponse
+
+def api_liste_demandes(request):
+    demandes = Demande.objects.values('id', 'statut')
+    return JsonResponse(list(demandes), safe=False)
+
+def api_liste_alertes_maintenance(request):
+    alertemain = Alertemain.objects.values('id', 'statut')
+    return JsonResponse(list(alertemain), safe=False)
+
+def api_liste_alertes_qualite(request):
+    alertequal = Alertequal.objects.values('id', 'statut')
+    return JsonResponse(list(alertequal), safe=False)
+
+def api_liste_alertes_chef(request):
+    alertechef = Alertechef.objects.values('id', 'statut')
+    return JsonResponse(list(alertechef), safe=False)
+
+####################################################################################""
 
 
 
+@login_required
+def export_data(request):
+    data_type = request.GET.get('type', '').lower()
+    
+    def safe_get_user_info(obj):
+        """Helper function to safely get user info with all edge cases handled"""
+        if not hasattr(obj, 'poste'):
+            return ("Inconnu", "N/A")
+            
+        if obj.poste_id is None:
+            return ("Utilisateur supprimé", "N/A")
+            
+        try:
+            if obj.poste and not obj.poste.is_deleted:
+                return (obj.poste.poste, obj.poste.shift)
+            return ("Utilisateur supprimé", "N/A")
+        except:
+            return ("Erreur", "N/A")
+
+    def safe_float_format(value):
+        """Format float values safely"""
+        try:
+            return f"{float(value):.2f}"
+        except (TypeError, ValueError):
+            return "N/A"
+
+    # Common CSV headers for alerts and demands
+    common_headers = ['ID', 'Poste', 'Shift', 'Date création', 'Statut', 'Temps écoulé (min)']
+    
+    if data_type == "demandes":
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="demandes_actuelles.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(common_headers)
+        
+        for demande in Demande.objects.filter(is_deleted=False):
+            poste, shift = safe_get_user_info(demande)
+            writer.writerow([
+                demande.id,
+                poste,
+                shift,
+                demande.created_at.strftime('%d/%m/%Y %H:%M'),
+                demande.get_statut_display(),
+                safe_float_format(demande.temps_de_traitement) if demande.temps_de_traitement else "En attente"
+            ])
+        return response
+
+    elif data_type == "alertemains":
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="alertes_maintenance_actuelles.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(common_headers)
+        
+        for alerte in Alertemain.objects.filter(is_deleted=False):
+            poste, shift = safe_get_user_info(alerte)
+            writer.writerow([
+                alerte.id,
+                poste,
+                shift,
+                alerte.created_at.strftime('%d/%m/%Y %H:%M'),
+                alerte.get_statut_display(),
+                safe_float_format(alerte.temps_de_traitement) if alerte.temps_de_traitement else "En attente"
+            ])
+        return response
+
+    elif data_type == "alertequals":
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="alertes_qualite_actuelles.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(common_headers)
+        
+        for alerte in Alertequal.objects.filter(is_deleted=False):
+            poste, shift = safe_get_user_info(alerte)
+            writer.writerow([
+                alerte.id,
+                poste,
+                shift,
+                alerte.created_at.strftime('%d/%m/%Y %H:%M'),
+                alerte.get_statut_display(),
+                safe_float_format(alerte.temps_de_traitement) if alerte.temps_de_traitement else "En attente"
+            ])
+        return response
+
+    elif data_type == "alertechefs":
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="alertes_chef_equipe_actuelles.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(common_headers)
+        
+        for alerte in Alertechef.objects.filter(is_deleted=False):
+            poste, shift = safe_get_user_info(alerte)
+            writer.writerow([
+                alerte.id,
+                poste,
+                shift,
+                alerte.created_at.strftime('%d/%m/%Y %H:%M'),
+                alerte.get_statut_display(),
+                safe_float_format(alerte.temps_de_traitement) if alerte.temps_de_traitement else "En attente"
+            ])
+        return response
+
+    elif data_type == "postes":
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="postes_actuels.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['Poste', 'Rôle', 'Date création', 'Dernière connexion', 'Statut'])
+        
+        for user in User.objects.filter(is_deleted=False):
+            writer.writerow([
+                user.poste,
+                user.get_role_display(),
+                user.created_at.strftime('%d/%m/%Y %H:%M'),
+                user.last_login.strftime('%d/%m/%Y %H:%M') if user.last_login else "Jamais",
+                "Actif"
+            ])
+        return response
+
+    else:
+        return HttpResponse("Type d'export non valide", status=400)

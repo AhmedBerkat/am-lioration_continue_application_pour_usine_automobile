@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 app_name = 'kroschu_application'
 
 urlpatterns = [
-    path('', views.home_view, name='home_view'),
+    path('', views.home, name='home'),
     path('register/', views.register_view, name='register_view'),
     path('valider_demande/<int:demande_id>/', views.valider_demande, name='valider_demande'),
     path('valider_alerte_maintenance/<int:alertemain_id>/', views.valider_alerte_maintenance, name='valider_alerte_maintenance'),
@@ -23,7 +23,26 @@ urlpatterns = [
     path('alerte_chef/', views.alerte_chef, name='alerte_chef'),
     path('affecter_tache/', views.affecter_tache, name='affecter_tache'),
     path('signaler_tache_terminee/<int:tache_id>/', views.signaler_tache_terminee, name='signaler_tache_terminee'),
-    
-    path('logout/', views.logout_view, name='logout_view'),
+    path('logout_view/', views.logout_view, name='logout_view'),
+    path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
+    path('add_poste/', views.add_poste, name='add_poste'),
+
+    path('soft_deleteposte/<str:model_name>/<int:poste>/', views.soft_deleteposte, name='soft_deleteposte'),
+    path('soft_deletedem/<str:model_name>/<int:id>/', views.soft_deletedem, name='soft_deletedem'),
+
+    
+
+    path('admin_postes/', views.admin_postes, name='admin_postes'),
+    path('admin_demandes/', views.admin_demandes, name='admin_demandes'),
+    path('admin_dashboard/alertes_maintenance/', views.admin_alertes_maintenance, name='admin_alertes_maintenance'),
+    path('admin_dashboard/alertes_qualite/', views.admin_alertes_qualite, name='admin_alertes_qualite'),
+    path('admin_dashboard/alertes_chef/', views.admin_alertes_chef, name='admin_alertes_chef'),
+
+    path('api_liste_demandes/', views.api_liste_demandes, name='api_liste_demandes'),
+    path('api_liste_alertes_maintenance/', views.api_liste_alertes_maintenance, name='api_liste_alertes_maintenance'),
+    path('api_liste_alertes_qualite/', views.api_liste_alertes_qualite, name='api_liste_alertes_qualite'),
+    path('api_liste_alertes_chef/', views.api_liste_alertes_chef, name='api_liste_alertes_chef'),
+    path('export_data/', views.export_data, name='export_data'),
+    
 ]

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/admin_demandes.css' %}">
+<h1>Gestion des demandes</h1>
+<div class="btn-container">
+<a href="{% url 'kroschu_application:export_data' %}?type=demandes" class="btn-export">Exporter les Alertes Logistique en CSV</a>
+</div>
+<!-- Filtres -->
+<form method="GET" action="{% url 'kroschu_application:admin_demandes' %}">
+    <label for="statut">Statut :</label>
+    <select id="statut" name="statut">
+        <option value="">Tous</option>
+        <option value="en_attente">En attente</option>
+        <option value="traite">Traité</option>
+    </select>
+    
+    <label for="poste"> Poste :</label>
+    <input type="text" id="poste" name="poste" placeholder="Rechercher par poste">
+    
+    <div class="date-container">
+        <label for="date">Date :</label>
+        <input type="date" id="date" name="date">
+    </div>
+    
+    <button type="submit">Filtrer</button>
+</form>
+
+<!-- Liste des demandes -->
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Poste</th>
+            <th>Shift</th>
+            <th>Date de création</th>
+            <th>Statut</th>
+            <th>Temps écoulé</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for demande in demandes %}
+        <tr>
+            <td>{{ demande.id }}</td>
+            <td>{{ demande.poste.poste }}</td>
+            <td>
+                {% if demande.poste.shift == 'A' %}
+                    A 
+                {% elif demande.poste.shift == 'B' %}
+                    B 
+                {% else %}
+                    C 
+                {% endif %}
+            </td>
+            <td>{{ demande.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ demande.statut }}</td>
+            <td>
+                {% if demande.temps_de_traitement %}
+                    {{ demande.temps_de_traitement|floatformat:2 }}
+                {% else %}
+                    En attente
+                {% endif %}
+            </td>
+            
+            <td>
+                <form method="POST" action="{% url 'kroschu_application:soft_deletedem' 'demande' demande.id %}" class="btn-delete">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">🗑️</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+    function mettreAJourStatuts() {
+        fetch("{% url 'kroschu_application:api_liste_demandes' %}")  // Remplacez par l'URL de votre API Django
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(demande => {
+                    let statutElement = document.getElementById(`statut-${demande.id}`);
+                    if (statutElement && statutElement.innerText !== demande.statut) {
+                        statutElement.innerText = demande.statut;
+                        statutElement.className = `statut ${demande.statut === 'en_attente' ? 'en-attente' : 'traite'}`;
+                    }
+                });
+            })
+            .catch(error => console.error("Erreur de mise à jour :", error));
+    }
+
+    setInterval(mettreAJourStatuts, 1000);  // Rafraîchissement chaque seconde
+</script>    
+{% endblock %}

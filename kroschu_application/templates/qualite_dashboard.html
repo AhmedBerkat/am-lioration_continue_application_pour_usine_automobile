@@ -68,9 +68,22 @@
         </tbody>
     </table>
     <script>
-        setInterval(function() {
-            location.reload();
-        }, 1000);  // Actualisation toutes les 1000 ms (1 seconde)
+        function mettreAJourStatuts() {
+            fetch("{% url 'kroschu_application:api_liste_alertes_qualite' %}")  // Remplacez par l'URL correcte
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(alertequal => {
+                        let statutElement = document.getElementById(`statut-${alertequal.id}`);
+                        if (statutElement && statutElement.innerText !== alertequal.statut) {
+                            statutElement.innerText = alertequal.statut;
+                            statutElement.className = `statut ${alertequal.statut === 'en_attente' ? 'en-attente' : 'traite'}`;
+                        }
+                    });
+                })
+                .catch(error => console.error("Erreur lors de la mise à jour :", error));
+        }
+    
+        setInterval(mettreAJourStatuts, 1000);  // Mise à jour toutes les secondes
     </script>
 </body>
 </html>

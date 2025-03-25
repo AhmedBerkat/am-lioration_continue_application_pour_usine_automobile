@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/admin_alertes_chef.css' %}">
+
+<h1>Gestion des alertes</h1>
+<div class="btn-container">
+<a href="{% url 'kroschu_application:export_data' %}?type=alertechefs" class="btn-export">Exporter les Alertes Poduction en CSV</a>
+</div>
+<!-- Filtres -->
+<form method="GET" action="{% url 'kroschu_application:admin_alertes_chef' %}">
+    <label for="statut">Statut :</label>
+    <select id="statut" name="statut">
+        <option value="">Tous</option>
+        <option value="en_attente">En attente</option>
+        <option value="traite">Traité</option>
+    </select>
+    
+    <label for="poste">Poste :</label>
+    <input type="text" id="poste" name="poste" placeholder="Rechercher par poste">
+    
+    <div class="date-container">
+        <label for="date">Date :</label>
+        <input type="date" id="date" name="date">
+    </div>
+    
+    <button type="submit">Filtrer</button>
+</form>
+
+<!-- Liste des demandes -->
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Poste</th>
+            <th>Shift</th>
+            <th>Date de création</th>
+            <th>Statut</th>
+            <th>Temps écoulé</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for alertechef in alertechefs %}
+        <tr>
+            <td>{{ alertechef.id }}</td>
+            <td>{{ alertechef.poste.poste }}</td>
+            <td>
+                {% if alertechef.poste.shift == 'A' %}
+                    A 
+                {% elif alertechef.poste.shift == 'B' %}
+                    B 
+                {% else %}
+                    C 
+                {% endif %}
+            </td>
+            <td>{{ alertechef.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ alertechef.statut }}</td>
+            <td>
+                {% if alertechef.temps_de_traitement %}
+                    {{ alertechef.temps_de_traitement|floatformat:2 }}
+                {% else %}
+                    En attente
+                {% endif %}
+            </td>
+            
+            <td>
+                <form method="POST" action="{% url 'kroschu_application:soft_deletedem' 'alertechef' alertechef.id %}" class="btn-delete">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">🗑️</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+    function mettreAJourStatuts() {
+        fetch("{% url 'kroschu_application:api_liste_alertes_chef' %}")  // Remplacez par l'URL correcte
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(alertechef => {
+                    let statutElement = document.getElementById(`statut-${alertechef.id}`);
+                    if (statutElement && statutElement.innerText !== alertechef.statut) {
+                        statutElement.innerText = alertechef.statut;
+                        statutElement.className = `statut ${alertechef.statut === 'en_attente' ? 'en-attente' : 'traite'}`;
+                    }
+                });
+            })
+            .catch(error => console.error("Erreur lors de la mise à jour :", error));
+    }
+
+    setInterval(mettreAJourStatuts, 1000);  // Mise à jour toutes les secondes
+</script>
+{% endblock %}
+
+

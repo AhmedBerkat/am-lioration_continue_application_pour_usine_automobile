@@ -17,8 +17,6 @@ body {
     margin: auto;
     gap: 8px;
     padding: 1px;
-    margin-bottom: 0px;
-    margin-top: 0px;
 }
 
 .left-column, .right-column {
@@ -27,6 +25,7 @@ body {
     gap: 10px;
     flex: 1;
     min-width: 300px;
+    align-items: center;
 }
 
 /* Style des sections */
@@ -41,11 +40,7 @@ body {
 h2, h3 {
     text-align: center;
 }
-h2 {margin-bottom: 0px;
-    margin-top: 1px; 
-
-}
-
+h2 { margin-bottom: 0px; margin-top: 1px; }
 h3 {
     border: 2px solid green;
     padding: 6px 12px;
@@ -56,11 +51,7 @@ h3 {
     margin-bottom: 2px;
     margin-top: 0px;
 }
-h4{
-    margin-bottom: 3px;
-    margin-top: 3px;
-
-}
+h4 { margin-bottom: 3px; margin-top: 3px; }
 
 /* Boutons circulaires */
 .circle-button {
@@ -84,6 +75,11 @@ h4{
 .chef-button { background-color: red; }
 
 /* Tableaux */
+.history {
+    overflow-x: auto; /* Active le défilement sur petits écrans */
+    width: 100%;
+}
+
 .history table {
     width: 100%;
     border-collapse: collapse;
@@ -123,11 +119,12 @@ h4{
     background: #0056b3;
 }
 
-/* Responsive */
+/* Responsive Design */
 @media (max-width: 1024px) {
     .dashboard-container {
-        flex-direction: column;
-        align-items: center;
+        flex-direction: row;
+        justify-content: center;
+        gap: 5px;
     }
     
     .left-column, .right-column {
@@ -149,14 +146,25 @@ h4{
 }
 
 @media (max-width: 768px) {
-    .left-column, .right-column {
+    .dashboard-container {
         flex-direction: column;
         align-items: center;
+    }
+
+    .left-column, .right-column {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
     }
 
     .circle-button {
         width: 65px;
         height: 65px;
+    }
+
+    .history table {
+        font-size: 12px;
     }
 }
 
@@ -165,16 +173,21 @@ h4{
         padding: 5px;
     }
 
+    .left-column, .right-column {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .circle-button {
+        width: 60px;
+        height: 60px;
+    }
+
     .history table {
         font-size: 12px;
     }
 
     .history th, .history td {
         padding: 6px;
-    }
-
-    .circle-button {
-        width: 60px;
-        height: 60px;
     }
 }

@@ -11,7 +11,7 @@
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
-    <h2>Bienvenue, Opérateur</h2>
+    <h2>Bienvenue,Opérateur</h2>
 
     <!-- Section Demande -->
     <div class="dashboard-container">
@@ -24,7 +24,7 @@
                     <button type="submit" class="circle-button maintenance-button"></button>
                 </form>
             </div>
-    
+            
             <div class="section">
                 <h3>Alerte qualité</h3>
                 <form method="POST" action="{% url 'kroschu_application:alerte_qualite' %}">
@@ -44,6 +44,7 @@
                     <button type="submit" class="circle-button demande-materiel-button"></button>
                 </form>
             </div>
+            
     
             <div class="section">
                 <h3>Alerte chef d’équipe / polyvalent</h3>
@@ -176,39 +177,5 @@
         </table>
     </div>
 
-    <!-- Section Historique des tâches -->
-    <div class="history">
-        <h3>Historique des tâches assignées et terminées</h3>
-<table>
-    <thead>
-        <tr>
-            <th>ID Tâche</th>
-            <th>Type de Machine</th>
-            <th>Description</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for tache in taches %}
-            <tr>
-                <td>{{ tache.id }}</td>
-                <td>{{ tache.type_machine }}</td>
-                <td>{{ tache.description }}</td>
-                <td>
-                    {% if tache.statut == 'en_attente' %}
-                        <!-- Formulaire pour signaler la tâche terminée -->
-                        <form method="POST" action="{% url 'kroschu_application:signaler_tache_terminee' tache.id %}">
-                            {% csrf_token %}
-                            <button type="submit">Valider</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="4">Aucune tâche assignée pour le moment.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-    </div>
 </body>
 </html>

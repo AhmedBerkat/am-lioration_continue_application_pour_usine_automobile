@@ -1,0 +1,19 @@
+ <!-- Barre de navigation -->
+ <div>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h1>Interface Administrateur</h1>
+        </div>
+        <ul class="navbar-links">
+            <li><a href="{% url 'kroschu_application:admin_postes' %}">Postes</a></li>
+            <li><a href="{% url 'kroschu_application:admin_demandes' %}">Demandes Logistique</a></li>
+            <li><a href="{% url 'kroschu_application:admin_alertes_maintenance' %}">Alertes Maintenance</a></li>
+            <li><a href="{% url 'kroschu_application:admin_alertes_qualite' %}">Alertes Qualité</a></li>
+            <li><a href="{% url 'kroschu_application:admin_alertes_chef' %}">Alertes Chef</a></li>
+            <li><a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">Se déconnecter</a></li>
+        </ul>
+    </nav>
+ </div>
+ <br>
+
+ 

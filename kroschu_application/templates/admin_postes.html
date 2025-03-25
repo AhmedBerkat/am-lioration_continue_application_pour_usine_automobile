@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/admin_postes.css' %}">
+<h1>Gestion des postes</h1>
+<div class="btn-container">
+    <a href="{% url 'kroschu_application:export_data' %}?type=postes" class="btn-export">Exporter les Postes en CSV</a>
+</div>
+
+<!-- Formulaire pour ajouter un poste -->
+<form method="POST" action="{% url 'kroschu_application:add_poste' %}">
+    {% csrf_token %}
+    <label for="poste">Poste :</label>
+    <input type="text" id="poste" name="poste" required>
+    
+    <label for="role">Rôle :</label>
+    <select id="role" name="role" required>
+        <option value="operateur">Opérateur</option>
+        <option value="logistique">Logistique</option>
+        <option value="maintenance">Maintenance</option>
+        <option value="qualite">Qualité</option>
+        <option value="chef_equipe">Chef d'équipe</option>
+    </select>
+
+    <div class="pass-container">
+        <label for="password">Mot de passe :</label>
+    <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">Ajouter</button>
+</form>
+
+<!-- Liste des postes -->
+<table>
+    <thead>
+        <tr>
+            
+            <th>Poste</th>
+            <th>Date de création</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for poste in postes %}
+        <tr>
+            
+            <td>{{ poste.poste }}</td>
+            <td>{{ poste.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ poste.role }}</td>
+            <td>
+                <form method="POST" action="{% url 'kroschu_application:soft_deleteposte' 'user' poste.poste %}" class="btn-delete">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">🗑️</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
