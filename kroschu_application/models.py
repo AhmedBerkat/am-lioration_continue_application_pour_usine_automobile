@@ -22,11 +22,11 @@ class BaseModel(models.Model):
         abstract = True
 
 class UserManager(BaseUserManager):
-    def create_user(self, poste, role, password=None):
+    def create_user(self, poste, role, password=None ,**extra_fields):
         """Crée et enregistre un utilisateur avec le poste, le rôle et le mot de passe donnés."""
         if not poste:
             raise ValueError("L'utilisateur doit avoir un poste.")
-        user = self.model(poste=poste, role=role)
+        user = self.model(poste=poste, role=role , **extra_fields)
         user.set_password(password)  # Hash du mot de passe
         user.save(using=self._db)
         return user
@@ -75,7 +75,7 @@ class Demande(BaseModel):
         ('en_attente', 'En attente'),
         ('traité', 'Traité'),
     ]
-    
+
     poste = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     statut = models.CharField(max_length=50, choices=STATUT_CHOICES, default='en_attente')
     validated_at = models.DateTimeField(null=True, blank=True)
@@ -151,7 +151,7 @@ class Tache(BaseModel):
         ('en_attente', 'En attente'),
         ('traité', 'Traité'),
     ]
-    
+
     poste = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     type_machine = models.CharField(max_length=100, choices=TYPE_MACHINE_CHOICES)
     description = models.TextField(blank=True, null=True)
