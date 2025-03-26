@@ -1,0 +1,18 @@
+(emplacement de dossier de travaille ) python manage.py createsuperuser
+
+poste :0   <---------------  le poste selon votre choix
+passwd: *****************
+
+
+
+
+
+
+(emplacement de dossier de travaille ) python manage.py shell
+from kroschu_application.models importe User
+user = User.objects.get(poste='0',role='admin')  <---------------  le poste selon votre choix 
+user.is_staff = True
+user.save()
+
+
+la connexion avec   "http://127.0.0.1:8000/admin_postes/"      <---------------  le poste et le passwd déjà choisi 

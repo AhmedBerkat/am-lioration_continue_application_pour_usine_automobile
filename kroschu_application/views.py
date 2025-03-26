@@ -90,13 +90,13 @@ def admin_dashboard(request):
 
 @login_required
 def operateur_dashboard(request):
-    operateur = request.user
-    taches = Tache.objects.filter(poste=operateur).filter(statut='en_attente')
-    demandes = Demande.objects.filter(poste=operateur).filter(statut='en_attente')
+    poste = request.user
+    taches = Tache.objects.filter(poste=poste).filter(statut='en_attente')
+    demandes = Demande.objects.filter(poste=poste).filter(statut='en_attente')
     
-    alertemains =Alertemain.objects.filter(poste=operateur).filter(statut='en_attente')
-    alertequals=Alertequal.objects.filter(poste=operateur).filter(statut='en_attente')
-    alertechefs =Alertechef.objects.filter(poste=operateur).filter(statut='en_attente')
+    alertemains =Alertemain.objects.filter(poste=poste).filter(statut='en_attente')
+    alertequals=Alertequal.objects.filter(poste=poste).filter(statut='en_attente')
+    alertechefs =Alertechef.objects.filter(poste=poste).filter(statut='en_attente')
 
     # Passer ces données au template
     context = {
@@ -394,11 +394,11 @@ def add_poste(request):
         poste = request.POST['poste']
       
         role = request.POST['role']
-       
+        zone = request.POST['zone']
         
         password = request.POST['password']
         
-        new_user = User(poste=poste, role=role,password=make_password(password))
+        new_user = User(poste=poste, role=role, zone=zone,password=make_password(password))
         new_user.save()
         return redirect('kroschu_application:admin_postes')
     
@@ -453,9 +453,10 @@ def admin_postes(request):
     if request.method == 'POST':
         # Ajouter un nouveau poste
         poste = request.POST.get('poste')
+        zone = request.POST.get('zone')
         role = request.POST.get('role')
         password = request.POST.get('password')
-        User.objects.create_user(poste=poste, role=role, password=password)
+        User.objects.create_user(poste=poste, role=role,zone=zone, password=password)
         return redirect('kroschu_application:admin_postes')
 
     context = {

@@ -34,6 +34,7 @@
             <th>ID</th>
             <th>Poste</th>
             <th>Shift</th>
+            <th>Zone</th>
             <th>Date de création</th>
             <th>Statut</th>
             <th>Temps écoulé</th>
@@ -43,9 +44,9 @@
     <tbody>
         {% for alertequal in alertequals %}
         <tr>
-            <td>{{ alertequal.id }}</td>
-            <td>{{ alertequal.poste.poste }}</td>
-            <td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.id }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste.poste }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
                 {% if alertequal.poste.shift == 'A' %}
                     A 
                 {% elif alertequal.poste.shift == 'B' %}
@@ -54,9 +55,10 @@
                     C 
                 {% endif %}
             </td>
-            <td>{{ alertequal.created_at|date:"d/m/Y H:i" }}</td>
-            <td>{{ alertequal.statut }}</td>
-            <td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste.zone}}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|date:"d/m/Y H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.statut }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
                 {% if alertequal.temps_de_traitement %}
                     {{ alertequal.temps_de_traitement|floatformat:2 }}
                 {% else %}

@@ -3,17 +3,17 @@ from .models import User, Demande, Alertechef,Alertequal,Alertemain, Tache
 
 # Admin pour User
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('poste', 'role','shift','created_at' ,'password')  # Affiche les champs dans la liste
+    list_display = ('poste', 'role','zone','shift','created_at' ,'password')  # Affiche les champs dans la liste
     list_editable = ('role',)  # Permet d'éditer directement le rôle dans l'interface admin
     list_filter = ('role',)  # Ajoute un filtre par rôle
-    search_fields = ('role',)  # Permet de rechercher par nom, prénom, ou rôle
+    search_fields = ('zone',)  # Permet de rechercher par nom, prénom, ou rôle
 
-admin.site.register(User, UserAdmin)
+admin.site.register(User, UserAdmin) 
 
 # Admin pour Demande
 
 # Filtre personnalisé pour les demandes traitées et non traitées
-class StatutDemandeFilter(admin.SimpleListFilter):
+class StatutDemandeFilter(admin.SimpleListFilter): 
     title = 'Statut de la demande'
     parameter_name = 'statut_demande'
 
@@ -54,8 +54,8 @@ class StatutAlerteFilter(admin.SimpleListFilter):
             ('non_traite', 'Alertes non traitées'),
         )
 
-    def queryset(self, request, queryset):
-        if self.value() == 'traite':
+    def queryset(self, request, queryset): 
+        if self.value() == 'traite': 
             return queryset.filter(statut='traite')  # Remplacer 'traite' par le statut correspondant
         if self.value() == 'non_traite':
             return queryset.filter(statut='non_traite')  # Remplacer 'non_traite' par le statut correspondant
@@ -76,8 +76,8 @@ admin.site.register(Alertemain, AlertemainAdmin)
 
 # Admin pour Alertequal
 class AlertequalAdmin(admin.ModelAdmin):
-    list_display = ('poste', 'statut', 'created_at')  # Affiche les champs dans la liste
-    list_filter = (StatutAlerteFilter, 'statut')  # Ajoute le filtre personnalisé pour les alertes traitées ou non traitées
+    list_display = ('poste', 'statut', 'created_at') # Affiche les champs dans la liste
+    list_filter = (StatutAlerteFilter, 'statut') # Ajoute le filtre personnalisé pour les alertes traitées ou non traitées
     list_editable = ('statut',)  # Permet d'éditer directement le statut dans l'interface admin
     search_fields = ('poste',)  # Permet de rechercher par poste
 
@@ -98,4 +98,4 @@ class AlertechefAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)  # Tri les alertes par date de création, de la plus récente à la plus ancienne
     date_hierarchy = 'created_at'  # Permet d'ajouter une hiérarchie de dates pour un meilleur filtrage
 
-admin.site.register(Alertechef, AlertechefAdmin)
+admin.site.register(Alertechef, AlertechefAdmin) 

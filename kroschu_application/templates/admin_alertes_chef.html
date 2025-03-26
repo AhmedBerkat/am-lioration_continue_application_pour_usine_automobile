@@ -34,6 +34,7 @@
             <th>ID</th>
             <th>Poste</th>
             <th>Shift</th>
+            <th>Zone</th>
             <th>Date de création</th>
             <th>Statut</th>
             <th>Temps écoulé</th>
@@ -43,9 +44,9 @@
     <tbody>
         {% for alertechef in alertechefs %}
         <tr>
-            <td>{{ alertechef.id }}</td>
-            <td>{{ alertechef.poste.poste }}</td>
-            <td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.id }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.poste.poste }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
                 {% if alertechef.poste.shift == 'A' %}
                     A 
                 {% elif alertechef.poste.shift == 'B' %}
@@ -54,14 +55,17 @@
                     C 
                 {% endif %}
             </td>
-            <td>{{ alertechef.created_at|date:"d/m/Y H:i" }}</td>
-            <td>{{ alertechef.statut }}</td>
-            <td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.poste.zone}}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.created_at|date:"d/m/Y H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.statut }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
                 {% if alertechef.temps_de_traitement %}
                     {{ alertechef.temps_de_traitement|floatformat:2 }}
                 {% else %}
                     En attente
                 {% endif %}
+            
+                
             </td>
             
             <td>

@@ -37,14 +37,14 @@ h1 {
 /* Formulaire */
 form {
     background: #fff;
-    padding: 20px;
+    padding: 5px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 20px auto;
+    max-width: 580px;
+    margin: 8px auto;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
 }
 
@@ -58,13 +58,21 @@ input, select {
     border-radius: 5px;
     flex: 1;
     min-width: 170px;
+    max-width: 170px;
 }
+input[type="password"] {
+    min-width: 195px;
+    max-width: 195px;
+}
+
+
 
 button {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 5px;
+    margin-left: 5px;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
@@ -119,14 +127,21 @@ tbody tr:hover {
 .pass-container {
     display: flex;
     align-items: center;
-    width: 85%; /* Prend toute la largeur */
+    width: 90%; /* Prend toute la largeur */
 }
 
 .pass-container label {
-    margin-right: 10px; /* Espacement entre le texte et l'input */
+    margin-right: 8px;
+    margin-left: 6px;  /* Espacement entre le texte et l'input */
     white-space: nowrap; /* Évite le retour à la ligne du label */
+}
+.pass-container button {
+    margin-left: 5px;
 }
 
 .pass-container input {
     flex-grow: 1; /* Le champ prend l’espace disponible */
 }
+
+
+

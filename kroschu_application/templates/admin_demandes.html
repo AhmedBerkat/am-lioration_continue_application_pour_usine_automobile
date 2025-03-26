@@ -33,6 +33,7 @@
             <th>ID</th>
             <th>Poste</th>
             <th>Shift</th>
+            <th>Zone</th>
             <th>Date de création</th>
             <th>Statut</th>
             <th>Temps écoulé</th>
@@ -42,9 +43,9 @@
     <tbody>
         {% for demande in demandes %}
         <tr>
-            <td>{{ demande.id }}</td>
-            <td>{{ demande.poste.poste }}</td>
-            <td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ demande.id }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ demande.poste.poste }}</td> 
+            <td style="font-size: 1.0em; font-weight: bold;">
                 {% if demande.poste.shift == 'A' %}
                     A 
                 {% elif demande.poste.shift == 'B' %}
@@ -53,9 +54,10 @@
                     C 
                 {% endif %}
             </td>
-            <td>{{ demande.created_at|date:"d/m/Y H:i" }}</td>
-            <td>{{ demande.statut }}</td>
-            <td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ demande.poste.zone}}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ demande.created_at|date:"d/m/Y H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ demande.statut }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
                 {% if demande.temps_de_traitement %}
                     {{ demande.temps_de_traitement|floatformat:2 }}
                 {% else %}

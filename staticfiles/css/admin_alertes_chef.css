@@ -35,14 +35,21 @@ input, select {
     border: 1px solid #ccc;
     border-radius: 5px;
     flex: 1;
-    min-width: 170px;
+    min-width: 110px;
 }
-
+input[type="text"] {
+    
+    max-width: 150px;
+}
+input[type="select"] {
+    
+    max-width: 150px;
+}
 button {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 16px;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
@@ -96,7 +103,7 @@ tbody tr:hover {
 .date-container {
     display: flex;
     align-items: center;
-    width: 85%; /* Prend toute la largeur */
+    width: 87%; /* Prend toute la largeur */
 }
 
 .date-container label {

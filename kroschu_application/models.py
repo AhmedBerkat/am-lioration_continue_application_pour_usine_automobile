@@ -54,6 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
 
     poste = models.CharField(max_length=50, unique=True, primary_key=True)
     role = models.CharField(max_length=50, choices=ROLE_CHOICES)
+    zone = models.TextField(blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 

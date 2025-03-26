@@ -11,7 +11,7 @@
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
-    <h2>Bienvenue,Opérateur</h2>
+    <h2>Bienvenue,Opérateur <br> Poste : {{ request.user.poste }} </h2>
 
     <!-- Section Demande -->
     <div class="dashboard-container">
@@ -73,7 +73,7 @@
             <tbody>
                 {% for demande in demandes %}
                     <tr>
-                        <td>{{ demande.id }}</td>
+                        <td style="font-size: 1.1em; font-weight: bold;">{{ demande.id }}</td>
                         <td>{{ demande.statut}}</td>
                         <td>
                             {% if demande.statut == 'en_attente' %}
@@ -103,7 +103,7 @@
             <tbody>
                 {% for alertemain in alertemains %}
                     <tr>
-                        <td>{{ alertemain.id }}</td>
+                        <td  style="font-size: 1.1em; font-weight: bold;">{{ alertemain.id }}</td>
                         <td>{{ alertemain.statut}}</td>
                         <td>
                             {% if alertemain.statut == 'en_attente' %}
@@ -131,7 +131,7 @@
             <tbody>
                 {% for  alertequal in alertequals %}
                     <tr>
-                        <td>{{  alertequal.id }}</td>
+                        <td  style="font-size: 1.1em; font-weight: bold;">{{  alertequal.id }}</td>
                         <td>{{  alertequal.statut }}</td>
                         <td>
                             {% if  alertequal.statut == 'en_attente' %}
@@ -159,7 +159,7 @@
             <tbody>
                 {% for alertechef in alertechefs %}
                     <tr>
-                        <td>{{ alertechef.id }}</td>
+                        <td  style="font-size: 1.1em; font-weight: bold;">{{ alertechef.id }}</td>
                         <td>{{ alertechef.statut }}</td>
                         <td>
                             {% if alertechef.statut == 'en_attente' %}

@@ -13,7 +13,7 @@
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
     
-    <h2>Bienvenue<br>Responsable Logistique</h2>
+    <h2>Responsable Logistique</h2>
 
     <h3>Liste des demandes de matériel</h3>
     
@@ -23,6 +23,7 @@
             <tr>
                 <th>ID Demande</th>
                 <th>Poste</th>
+                <th>Zone</th>
                 <th>Shift</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
@@ -35,18 +36,19 @@
         <tbody>
             {% for demande in demandes %}
             <tr>
-                <td>{{ demande.id }}</td>
-                <td>{{ demande.poste.poste}}</td>
-                <td>
+                <td><b>{{ demande.id }}</b></td>
+                <td><b>{{ demande.poste.poste}}</b></td>
+                <td><b>{{ demande.poste.zone}}</b></td>
+                <td ><b>
                     {% if demande.poste.shift == 'A' %}
                         A 
                     {% elif demande.poste.shift == 'B' %}
                         B 
                     {% else %}
                         C 
-                    {% endif %}
+                    {% endif %}</b>
                 </td>
-                <td>{{ demande.created_at|date:"d/m/Y H:i" }}</td>
+                <td ><b>{{ demande.created_at|date:"d/m/Y H:i" }}</b></td>
                 <td>
                     <span id="statut-{{ demande.id }}" class="statut {% if demande.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
                         {{ demande.statut }}
@@ -54,12 +56,12 @@
                 </td>
                 
                 
-                <td>
+                <td><b>
                     {% if demande.temps_de_traitement %}
                         {{ demande.temps_de_traitement|floatformat:2 }}
                     {% else %}
                         En attente
-                    {% endif %}
+                    {% endif %}</b>
                 </td>
                 
                 

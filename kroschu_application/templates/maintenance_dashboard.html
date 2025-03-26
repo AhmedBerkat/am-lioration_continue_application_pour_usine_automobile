@@ -22,6 +22,7 @@
             <tr>
                 <th>ID Alerte</th>
                 <th>Poste</th>
+                <th>Zone</th>
                 <th>Shift</th>
                 <th>Date de Création</th>
                 <th>Statut</th>
@@ -32,9 +33,10 @@
         <tbody>
             {% for alertemain in alertemains %}
             <tr>
-                <td>{{ alertemain.id }}</td>
-                <td>{{ alertemain.poste }}</td>
-                <td>
+                <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.id }}</td>
+                <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste }}</td>
+                <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste.zone}}</td>
+                <td style="font-size: 1.0em; font-weight: bold;">
                     {% if alertemain.poste.shift == 'A' %}
                         A 
                     {% elif alertemain.poste.shift == 'B' %}
@@ -43,14 +45,14 @@
                         C 
                     {% endif %}
                 </td>
-                <td>{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
+                <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
                     <span id="statut-{{ alertemain.id }}" class="statut {% if alertemain.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
                         {{ alertemain.statut }}
                     </span>
                 </td>
                 
-                <td>
+                <td style="font-size: 1.0em; font-weight: bold;">
                     {% if alertemain.temps_de_traitement %}
                         {{ alertemain.temps_de_traitement|floatformat:2 }}
                     {% else %}
