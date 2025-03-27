@@ -18,81 +18,72 @@
     <h3>Liste des demandes de matériel</h3>
     
     <!-- Table des demandes -->
-    <table>
-        <thead>
-            <tr>
-                <th>ID Demande</th>
-                <th>Poste</th>
-                <th>Zone</th>
-                <th>Shift</th>
-                <th>Date de Création</th>
-                <th>Statut</th>
-                <th>Temps écoulé</th>
-                
-                
-                
-            </tr>
-        </thead>
-        <tbody>
-            {% for demande in demandes %}
-            <tr>
-                <td><b>{{ demande.id }}</b></td>
-                <td><b>{{ demande.poste.poste}}</b></td>
-                <td><b>{{ demande.poste.zone}}</b></td>
-                <td ><b>
-                    {% if demande.poste.shift == 'A' %}
-                        A 
-                    {% elif demande.poste.shift == 'B' %}
-                        B 
-                    {% else %}
-                        C 
-                    {% endif %}</b>
-                </td>
-                <td ><b>{{ demande.created_at|date:"d/m/Y H:i" }}</b></td>
-                <td>
-                    <span id="statut-{{ demande.id }}" class="statut {% if demande.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
-                        {{ demande.statut }}
-                    </span>
-                </td>
-                
-                
-                <td><b>
-                    {% if demande.temps_de_traitement %}
-                        {{ demande.temps_de_traitement|floatformat:2 }}
-                    {% else %}
-                        En attente
-                    {% endif %}</b>
-                </td>
-                
-                
-                
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">Aucune demande disponible</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div id="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Demande</th>
+                    <th>Poste</th>
+                    <th>Zone</th>
+                    <th>Shift</th>
+                    <th>Date de Création</th>
+                    <th>Statut</th>
+                    <th>Temps écoulé</th>
+                </tr>
+            </thead>
+            <tbody id="demandes-body">
+                {% for demande in demandes %}
+                <tr>
+                    <td><b>{{ demande.id }}</b></td>
+                    <td><b>{{ demande.poste.poste}}</b></td>
+                    <td><b>{{ demande.poste.zone}}</b></td>
+                    <td><b>
+                        {% if demande.poste.shift == 'A' %}
+                            A 
+                        {% elif demande.poste.shift == 'B' %}
+                            B 
+                        {% else %}
+                            C 
+                        {% endif %}</b>
+                    </td>
+                    <td><b>{{ demande.created_at|date:"d/m/Y H:i" }}</b></td>
+                    <td>
+                        <span id="statut-{{ demande.id }}" class="statut {% if demande.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
+                            {{ demande.statut }}
+                        </span>
+                    </td>
+                    <td><b>
+                        {% if demande.temps_de_traitement %}
+                            {{ demande.temps_de_traitement|floatformat:2 }}
+                        {% else %}
+                            En attente
+                        {% endif %}</b>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">Aucune demande disponible</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     <script>
-        function mettreAJourStatuts() {
-            fetch("{% url 'kroschu_application:api_liste_demandes' %}")  // Remplacez par l'URL de votre API Django
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(demande => {
-                        let statutElement = document.getElementById(`statut-${demande.id}`);
-                        if (statutElement && statutElement.innerText !== demande.statut) {
-                            statutElement.innerText = demande.statut;
-                            statutElement.className = `statut ${demande.statut === 'en_attente' ? 'en-attente' : 'traite'}`;
-                        }
-                    });
+        function refreshTable() {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDocument = parser.parseFromString(html, 'text/html');
+                    const newTableBody = newDocument.getElementById('demandes-body');
+                    document.getElementById('demandes-body').innerHTML = newTableBody.innerHTML;
                 })
-                .catch(error => console.error("Erreur de mise à jour :", error));
+                .catch(error => console.error('Erreur lors du rafraîchissement:', error));
         }
-    
-        setInterval(mettreAJourStatuts, 1000);  // Rafraîchissement chaque seconde
-    </script>    
+
+        // Rafraîchir toutes les secondes (1000 ms)
+        setInterval(refreshTable, 5000);
+    </script>
 </body>
-
-
 </html>

@@ -4,28 +4,38 @@ body {
     background-color: #f8f9fa;
     margin: 0;
     padding: 1px;
-    overflow-x: hidden; /* Évite le scroll horizontal */
+    overflow-x: hidden;
 }
 
 /* Conteneur principal */
 .dashboard-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    flex-wrap: wrap;
-    max-width: 1200px;
-    margin: auto;
-    gap: 8px;
-    padding: 1px;
+    max-width: 1000px;
+    margin: 0 auto;
+    gap: 10px;
+    padding: 8px;
+    margin-top: 2px;
 }
 
+/* Conteneur des boutons - toujours en ligne */
+.buttons-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    width: 90%;
+    flex-wrap: nowrap; /* Empêche le passage à la ligne */
+}
+
+/* Colonnes (maintenant des rangées) */
 .left-column, .right-column {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    flex: 1;
-    min-width: 300px;
     align-items: center;
+    flex: 1;
+    min-width: auto;
 }
 
 /* Style des sections */
@@ -33,7 +43,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: 90%;
 }
 
 /* Titres */
@@ -50,6 +60,7 @@ h3 {
     font-weight: bold;
     margin-bottom: 2px;
     margin-top: 0px;
+    white-space: nowrap; /* Empêche le retour à la ligne */
 }
 h4 { margin-bottom: 3px; margin-top: 3px; }
 
@@ -76,29 +87,34 @@ h4 { margin-bottom: 3px; margin-top: 3px; }
 
 /* Tableaux */
 .history {
-    overflow-x: auto; /* Active le défilement sur petits écrans */
+    overflow-x: auto;
     width: 100%;
+    margin-top: 2px;
+    border-radius: 5px;
 }
 
 .history table {
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid black;
+    
     margin-bottom: 2px;
     margin-top: 2px;
-    border-radius: 5px;
+    
+  
 }
 
 .history th, .history td {
     padding: 10px;
     font-size: 14px;
     text-align: center;
-    border: 1px solid black;
+    border: 1px solid rgb(29, 28, 28);
+   
 }
 
 .history th {
-    background-color: #5303bd;
+    background-color: #008E97;
     color: white;
+    
 }
 
 /* Bouton de déconnexion */
@@ -113,81 +129,68 @@ h4 { margin-bottom: 3px; margin-top: 3px; }
     text-decoration: none;
     font-size: 12px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .logout-button:hover {
     background: #0056b3;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .dashboard-container {
-        flex-direction: row;
-        justify-content: center;
-        gap: 5px;
+/* Media Queries pour ajuster les espacements */
+@media (max-width: 768px) {
+    .buttons-row {
+        gap: 15px;
     }
     
-    .left-column, .right-column {
-        flex-direction: row;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
     .circle-button {
         width: 70px;
         height: 70px;
     }
-
+    
     h3 {
-        font-size: 14px;
-        padding: 5px 10px;
-    }
-}
-
-@media (max-width: 768px) {
-    .dashboard-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .left-column, .right-column {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .circle-button {
-        width: 65px;
-        height: 65px;
-    }
-
-    .history table {
-        font-size: 12px;
+        font-size: 13px;
+        padding: 4px 9px;
     }
 }
 
 @media (max-width: 480px) {
-    .dashboard-container {
-        padding: 5px;
+    .buttons-row {
+        gap: 10px;
     }
-
-    .left-column, .right-column {
-        flex-direction: column;
-        align-items: center;
-    }
-
+    
     .circle-button {
-        width: 60px;
-        height: 60px;
+        width: 65px;
+        height: 65px;
     }
-
-    .history table {
+    
+    h3 {
+        font-size: 13px;
+        padding: 4px 8px;
+    }
+    
+    .history th, .history td {
+        padding: 8px;
         font-size: 12px;
     }
+}
 
-    .history th, .history td {
-        padding: 6px;
+.history button[type="submit"] {
+    width: auto;
+    display: inline-block;
+    background: rgb(21, 230, 21);
+    color: white;
+    font-size: 18px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 165px;
+    height: 30px;
+}
+
+/* Media Query pour les petits écrans */
+@media (max-width: 480px) {
+    button[type="submit"] {
+        padding: 5px 8px;
+        font-size: 13px;
     }
 }

@@ -16,6 +16,7 @@
     <h3>Liste des alertes de chef d'equipe</h3>
     
     <!-- Table des alertes -->
+    <div id="table-container">
     <table>
         <thead>
             <tr>
@@ -29,7 +30,7 @@
                 
             </tr>
         </thead>
-        <tbody>
+        <tbody id="alertechefs-body">
             {% for alertechef in alertechefs%}
             <tr>
                 <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.id }}</td>
@@ -66,24 +67,23 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
     
     <script>
-        function mettreAJourStatuts() {
-            fetch("{% url 'kroschu_application:api_liste_alertes_chef' %}")  // Remplacez par l'URL correcte
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(alertechef => {
-                        let statutElement = document.getElementById(`statut-${alertechef.id}`);
-                        if (statutElement && statutElement.innerText !== alertechef.statut) {
-                            statutElement.innerText = alertechef.statut;
-                            statutElement.className = `statut ${alertechef.statut === 'en_attente' ? 'en-attente' : 'traite'}`;
-                        }
-                    });
+        function refreshTable() {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDocument = parser.parseFromString(html, 'text/html');
+                    const newTableBody = newDocument.getElementById('alertechefs-body');
+                    document.getElementById('alertechefs-body').innerHTML = newTableBody.innerHTML;
                 })
-                .catch(error => console.error("Erreur lors de la mise à jour :", error));
+                .catch(error => console.error('Erreur lors du rafraîchissement:', error));
         }
-    
-        setInterval(mettreAJourStatuts, 1000);  // Mise à jour toutes les secondes
+
+        // Rafraîchir toutes les secondes (1000 ms)
+        setInterval(refreshTable, 5000);
     </script>
 </body>
 </html>

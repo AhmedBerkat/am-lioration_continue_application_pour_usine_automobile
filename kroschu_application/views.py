@@ -340,53 +340,6 @@ def valider_alerte_chef(request, alertechef_id):
 
 ##################################################################################################################
 
-
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def admin_dashboard(request):
-    # Filtres personnalisés
-    statut_filter = request.GET.get('statut')
-    poste_filter = request.GET.get('poste')
-    date_filter = request.GET.get('date')
-    
-    demandes = Demande.objects.filter(is_deleted=False)
-    alertemains = Alertemain.objects.filter(is_deleted=False)
-    alertequals = Alertequal.objects.filter(is_deleted=False)
-    alertechefs = Alertechef.objects.filter(is_deleted=False)
-    users = User.objects.filter(is_deleted=False)
-
-    # Application des filtres
-    if statut_filter:
-        demandes = demandes.filter(statut=statut_filter)
-        alertemains = alertemains.filter(statut=statut_filter)
-        alertequals = alertequals.filter(statut=statut_filter)
-        alertechefs = alertechefs.filter(statut=statut_filter)
-    if poste_filter:
-        demandes = demandes.filter(poste__poste__icontains=poste_filter)
-        alertemains = alertemains.filter(poste__poste__icontains=poste_filter)
-        alertequals = alertequals.filter(poste__poste__icontains=poste_filter)
-        alertechefs = alertechefs.filter(poste__poste__icontains=poste_filter)
-        
-    if date_filter:
-        demandes = demandes.filter(created_at__date=date_filter)
-        alertemains = alertemains.filter(created_at__date=date_filter)
-        alertequals = alertequals.filter(created_at__date=date_filter)
-        alertechefs = alertechefs.filter(created_at__date=date_filter)
-
-    context = {
-        'demandes': demandes,
-        'alertemains': alertemains,
-        'alertequals': alertequals,
-        'alertechefs': alertechefs,
-        'users': users,
-        'statut_choices': Demande.STATUT_CHOICES,
-        'statut_choices': Alertemain.STATUT_CHOICES,
-        'statut_choices': Alertequal.STATUT_CHOICES,
-        'statut_choices': Alertechef.STATUT_CHOICES
-
-    }
-    return render(request, 'admin_dashboard.html', context)
-
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def add_poste(request):
@@ -549,23 +502,7 @@ def admin_alertes_chef(request):
     return render(request, 'admin_alertes_chef.html', context)
 
 
-from django.http import JsonResponse
 
-def api_liste_demandes(request):
-    demandes = Demande.objects.values('id', 'statut')
-    return JsonResponse(list(demandes), safe=False)
-
-def api_liste_alertes_maintenance(request):
-    alertemain = Alertemain.objects.values('id', 'statut')
-    return JsonResponse(list(alertemain), safe=False)
-
-def api_liste_alertes_qualite(request):
-    alertequal = Alertequal.objects.values('id', 'statut')
-    return JsonResponse(list(alertequal), safe=False)
-
-def api_liste_alertes_chef(request):
-    alertechef = Alertechef.objects.values('id', 'statut')
-    return JsonResponse(list(alertechef), safe=False)
 
 ####################################################################################""
 

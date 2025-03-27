@@ -27,6 +27,7 @@
 </form>
 
 <!-- Liste des demandes -->
+<div id="table-container">
 <table>
     <thead>
         <tr>
@@ -40,7 +41,7 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="demandes-body">
         {% for demande in demandes %}
         <tr>
             <td style="font-size: 1.0em; font-weight: bold;">{{ demande.id }}</td>
@@ -75,22 +76,21 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 <script>
-    function mettreAJourStatuts() {
-        fetch("{% url 'kroschu_application:api_liste_demandes' %}")  // Remplacez par l'URL de votre API Django
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(demande => {
-                    let statutElement = document.getElementById(`statut-${demande.id}`);
-                    if (statutElement && statutElement.innerText !== demande.statut) {
-                        statutElement.innerText = demande.statut;
-                        statutElement.className = `statut ${demande.statut === 'en_attente' ? 'en-attente' : 'traite'}`;
-                    }
-                });
+    function refreshTable() {
+        fetch(window.location.href)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const newDocument = parser.parseFromString(html, 'text/html');
+                const newTableBody = newDocument.getElementById('demandes-body');
+                document.getElementById('demandes-body').innerHTML = newTableBody.innerHTML;
             })
-            .catch(error => console.error("Erreur de mise à jour :", error));
+            .catch(error => console.error('Erreur lors du rafraîchissement:', error));
     }
 
-    setInterval(mettreAJourStatuts, 1000);  // Rafraîchissement chaque seconde
+    // Rafraîchir toutes les secondes (1000 ms)
+    setInterval(refreshTable, 5000);
 </script>    
 {% endblock %}

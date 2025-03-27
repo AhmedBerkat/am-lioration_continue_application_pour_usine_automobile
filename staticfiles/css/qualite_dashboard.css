@@ -52,7 +52,7 @@ body {
 
 /* Amélioration du tableau */
 table {
-    width: 90%;
+    width: 100%;
     max-width: 1000px;  /* Empêche le tableau de s'étirer excessivement sur les grands écrans */
     margin: 20px auto;
     border-collapse: collapse;

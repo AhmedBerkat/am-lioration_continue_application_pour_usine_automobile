@@ -11,11 +11,13 @@
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
-    <h2>Bienvenue,Opérateur <br> Poste : {{ request.user.poste }} </h2>
+    <h2>Opérateur <br> Poste : {{ request.user.poste }} </h2>
 
     <!-- Section Demande -->
-    <div class="dashboard-container">
-        <!-- Colonne gauche -->
+<!-- Section Demande -->
+<div class="dashboard-container">
+    <!-- Première rangée de boutons (2 boutons) -->
+    <div class="buttons-row">
         <div class="left-column">
             <div class="section">
                 <h3>Alerte maintenance</h3>
@@ -24,7 +26,23 @@
                     <button type="submit" class="circle-button maintenance-button"></button>
                 </form>
             </div>
-            
+        </div>
+        <div class="left-column">
+            <div class="section">
+                <h3>Demande matériel</h3>
+                <form method="POST" action="{% url 'kroschu_application:demande_materiel' %}">
+                    {% csrf_token %}    
+                    <button type="submit" class="circle-button demande-materiel-button"></button>
+                </form>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+    <!-- Deuxième rangée de boutons (2 boutons) -->
+    <div class="buttons-row">
+        <div class="right-column">
             <div class="section">
                 <h3>Alerte qualité</h3>
                 <form method="POST" action="{% url 'kroschu_application:alerte_qualite' %}">
@@ -33,21 +51,10 @@
                 </form>
             </div>
         </div>
-    
-    
-        <!-- Colonne droite -->
+        
         <div class="right-column">
             <div class="section">
-                <h3>Demande matériel</h3>
-                <form method="POST" action="{% url 'kroschu_application:demande_materiel' %}">
-                    {% csrf_token %}    
-                    <button type="submit" class="circle-button demande-materiel-button"></button>
-                </form>
-            </div>
-            
-    
-            <div class="section">
-                <h3>Alerte chef d’équipe / polyvalent</h3>
+                <h3>Alerte chef d'équipe</h3>
                 <form method="POST" action="{% url 'kroschu_application:alerte_chef' %}">
                     {% csrf_token %}
                     <button type="submit" class="circle-button chef-button"></button>
@@ -55,6 +62,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <!-- Section Historique des demandes et alertes -->
     <div class="history">

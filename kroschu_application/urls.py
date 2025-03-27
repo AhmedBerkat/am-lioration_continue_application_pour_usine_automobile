@@ -28,7 +28,7 @@ urlpatterns = [
 
     path('add_poste/', views.add_poste, name='add_poste'),
 
-    path('soft_deleteposte/<str:model_name>/<int:poste>/', views.soft_deleteposte, name='soft_deleteposte'),
+    path('soft_deleteposte/<str:model_name>/<str:poste>/', views.soft_deleteposte, name='soft_deleteposte'),
     path('soft_deletedem/<str:model_name>/<int:id>/', views.soft_deletedem, name='soft_deletedem'),
 
     
@@ -39,10 +39,7 @@ urlpatterns = [
     path('admin_dashboard/alertes_qualite/', views.admin_alertes_qualite, name='admin_alertes_qualite'),
     path('admin_dashboard/alertes_chef/', views.admin_alertes_chef, name='admin_alertes_chef'),
 
-    path('api_liste_demandes/', views.api_liste_demandes, name='api_liste_demandes'),
-    path('api_liste_alertes_maintenance/', views.api_liste_alertes_maintenance, name='api_liste_alertes_maintenance'),
-    path('api_liste_alertes_qualite/', views.api_liste_alertes_qualite, name='api_liste_alertes_qualite'),
-    path('api_liste_alertes_chef/', views.api_liste_alertes_chef, name='api_liste_alertes_chef'),
+   
     path('export_data/', views.export_data, name='export_data'),
     
 ]
