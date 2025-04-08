@@ -38,7 +38,7 @@
             <th>Zone</th>
             <th>Date de création</th>
             <th>Statut</th>
-            <th>Temps écoulé</th>
+            <th>Temps écoulé min</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -64,7 +64,7 @@
                     {{ alertechef.temps_de_traitement|floatformat:2 }}
                 {% else %}
                     En attente
-                {% endif %}
+                {% endif %} 
             
                 
             </td>
