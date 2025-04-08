@@ -507,7 +507,6 @@ def admin_alertes_chef(request):
 ####################################################################################""
 
 
-
 @login_required
 def export_data(request):
     data_type = request.GET.get('type', '').lower()
@@ -517,7 +516,7 @@ def export_data(request):
         if not hasattr(obj, 'poste'):
             return ("Inconnu", "N/A")
             
-        if obj.poste_id is None:
+        if obj.poste is None:
             return ("Utilisateur supprimé", "N/A")
             
         try:
@@ -527,18 +526,22 @@ def export_data(request):
         except:
             return ("Erreur", "N/A")
 
-    def safe_float_format(value):
-        """Format float values safely"""
+    def calculate_time_elapsed(created, validated):
+        """Calculate minutes between two datetime objects"""
+        if not validated:
+            return "En attente"
         try:
-            return f"{float(value):.2f}"
-        except (TypeError, ValueError):
+            delta = validated - created
+            return f"{delta.total_seconds() / 60:.2f}"  # Convert to minutes with 2 decimals
+        except Exception as e:
+            print(f"Error calculating time: {e}")
             return "N/A"
 
-    # Common CSV headers for alerts and demands
+    # Common CSV headers
     common_headers = ['ID', 'Poste', 'Shift', 'Date création', 'Statut', 'Temps écoulé (min)']
     
     if data_type == "demandes":
-        response = HttpResponse(content_type='text/csv')
+        response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
         response['Content-Disposition'] = 'attachment; filename="demandes_actuelles.csv"'
         
         writer = csv.writer(response)
@@ -551,13 +554,13 @@ def export_data(request):
                 poste,
                 shift,
                 demande.created_at.strftime('%d/%m/%Y %H:%M'),
-                demande.get_statut_display(),
-                safe_float_format(demande.temps_de_traitement) if demande.temps_de_traitement else "En attente"
+                demande.statut,
+                calculate_time_elapsed(demande.created_at, demande.validated_at)
             ])
         return response
 
     elif data_type == "alertemains":
-        response = HttpResponse(content_type='text/csv')
+        response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
         response['Content-Disposition'] = 'attachment; filename="alertes_maintenance_actuelles.csv"'
         
         writer = csv.writer(response)
@@ -570,13 +573,13 @@ def export_data(request):
                 poste,
                 shift,
                 alerte.created_at.strftime('%d/%m/%Y %H:%M'),
-                alerte.get_statut_display(),
-                safe_float_format(alerte.temps_de_traitement) if alerte.temps_de_traitement else "En attente"
+                alerte.statut,
+                calculate_time_elapsed(alerte.created_at, alerte.validated_at)
             ])
         return response
 
     elif data_type == "alertequals":
-        response = HttpResponse(content_type='text/csv')
+        response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
         response['Content-Disposition'] = 'attachment; filename="alertes_qualite_actuelles.csv"'
         
         writer = csv.writer(response)
@@ -589,13 +592,13 @@ def export_data(request):
                 poste,
                 shift,
                 alerte.created_at.strftime('%d/%m/%Y %H:%M'),
-                alerte.get_statut_display(),
-                safe_float_format(alerte.temps_de_traitement) if alerte.temps_de_traitement else "En attente"
+                alerte.statut,
+                calculate_time_elapsed(alerte.created_at, alerte.validated_at)
             ])
         return response
 
     elif data_type == "alertechefs":
-        response = HttpResponse(content_type='text/csv')
+        response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
         response['Content-Disposition'] = 'attachment; filename="alertes_chef_equipe_actuelles.csv"'
         
         writer = csv.writer(response)
@@ -608,13 +611,13 @@ def export_data(request):
                 poste,
                 shift,
                 alerte.created_at.strftime('%d/%m/%Y %H:%M'),
-                alerte.get_statut_display(),
-                safe_float_format(alerte.temps_de_traitement) if alerte.temps_de_traitement else "En attente"
+                alerte.statut,
+                calculate_time_elapsed(alerte.created_at, alerte.validated_at)
             ])
         return response
 
     elif data_type == "postes":
-        response = HttpResponse(content_type='text/csv')
+        response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
         response['Content-Disposition'] = 'attachment; filename="postes_actuels.csv"'
         
         writer = csv.writer(response)
@@ -623,7 +626,7 @@ def export_data(request):
         for user in User.objects.filter(is_deleted=False):
             writer.writerow([
                 user.poste,
-                user.get_role_display(),
+                user.role(),
                 user.created_at.strftime('%d/%m/%Y %H:%M'),
                 user.last_login.strftime('%d/%m/%Y %H:%M') if user.last_login else "Jamais",
                 "Actif"
