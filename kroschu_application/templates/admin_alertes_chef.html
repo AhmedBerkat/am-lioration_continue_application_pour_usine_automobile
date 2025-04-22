@@ -37,8 +37,10 @@
             <th>Shift</th>
             <th>Zone</th>
             <th>Date de création</th>
+            <th>Heure de création</th>
+            <th>Heure de clôture</th>
             <th>Statut</th>
-            <th>Temps écoulé min</th>
+            <th>Temps écoulé (min)</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -57,17 +59,26 @@
                 {% endif %}
             </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.poste.zone}}</td>
-            <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.created_at|date:"d/m/Y H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.created_at|date:"d/m/Y" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.created_at|time:"H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
+                {% if alertechef.statut == 'en_attente' %}
+                    en_attente
+                {% else %}
+                    {{ alertechef.validated_at|time:"H:i" }}
+                
+                
+                {% endif %}
+            </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.statut }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">
                 {% if alertechef.temps_de_traitement %}
                     {{ alertechef.temps_de_traitement|floatformat:2 }}
                 {% else %}
                     En attente
-                {% endif %} 
-            
-                
+                {% endif %}
             </td>
+            
             
             <td>
                 <form method="POST" action="{% url 'kroschu_application:soft_deletedem' 'alertechef' alertechef.id %}" class="btn-delete">

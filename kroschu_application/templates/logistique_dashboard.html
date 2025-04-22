@@ -5,17 +5,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de bord - Logistique</title>
+    <title>Tableau de bord - Logistique {{ current_zone }}</title>
     <link rel="stylesheet" href="{% static 'css/logistique_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard_base.css' %}">
+     
+
 </head>
 <body>
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
     
-    <h2>Responsable Logistique</h2>
+    <h2>Responsable Logistique - Zone {{ current_zone }}</h2>
 
     <h3>Liste des demandes de matériel</h3>
+    
+    <!-- Filtre de zone -->
+    <form method="GET" id="zone-filter-form">
+        <label for="zone">Filtrer par zone:</label>
+        <select name="zone" id="zone-select" onchange="this.form.submit()">
+            <option value="VK" {% if current_zone == "VK" %}selected{% endif %}>VK</option>
+            <option value="CUTTING" {% if current_zone == "CUTTING" %}selected{% endif %}>CUTTING</option>
+            <option value="KIT" {% if current_zone == "KIT" %}selected{% endif %}>KIT</option>
+            
+        </select>
+        <input type="hidden" name="keep_filter" value="1">
+    </form>
     
     <!-- Table des demandes -->
     <div id="table-container">
@@ -62,7 +77,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8">Aucune demande disponible</td>
+                    <td colspan="8">Aucune demande disponible pour la zone {{ current_zone }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

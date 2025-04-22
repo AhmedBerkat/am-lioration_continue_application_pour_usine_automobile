@@ -151,7 +151,11 @@ def alerte_qualite(request):
 
 @login_required
 def logistique_dashboard(request):
-    demandes = Demande.objects.all().order_by(
+    # Récupérer la zone filtrée (si présente dans les paramètres GET) ou utiliser la zone de l'utilisateur par défaut
+    zone_filter = request.GET.get('zone') or 'VK'
+    
+    # Filtrer les demandes
+    demandes = Demande.objects.filter(poste__zone=zone_filter).order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
             models.When(statut="traite", then=1),
@@ -161,13 +165,18 @@ def logistique_dashboard(request):
         "-created_at"
     )
 
-    return render(request, 'logistique_dashboard.html', {'demandes': demandes})
+    return render(request, 'logistique_dashboard.html', {
+        'demandes': demandes,
+        'current_zone': zone_filter,  # Zone actuellement affichée
+        'user_zone': request.user.zone  # Zone par défaut de l'utilisateur
+    })
 
 
 
 @login_required
 def maintenance_dashboard(request):
-    alertemains = Alertemain.objects.all().order_by(
+    zone_filter = request.GET.get('zone') or 'VK'
+    alertemains = Alertemain.objects.filter(poste__zone=zone_filter).order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
             models.When(statut="traite", then=1),
@@ -176,11 +185,16 @@ def maintenance_dashboard(request):
         ),
         "-created_at"
     )
-    return render(request, 'maintenance_dashboard.html', {'alertemains': alertemains})
+    return render(request, 'maintenance_dashboard.html', {
+        'alertemains': alertemains,
+        'current_zone': zone_filter,  
+        'user_zone': request.user.zone
+    })
 
 @login_required
 def qualite_dashboard(request):
-    alertequals = Alertequal.objects.all().order_by(
+    zone_filter = request.GET.get('zone') or 'VK'
+    alertequals = Alertequal.objects.filter(poste__zone=zone_filter).order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
             models.When(statut="traite", then=1),
@@ -189,11 +203,16 @@ def qualite_dashboard(request):
         ),
         "-created_at"
     )
-    return render(request, 'qualite_dashboard.html', {'alertequals': alertequals})
+    return render(request, 'qualite_dashboard.html', {
+        'alertequals': alertequals,
+        'current_zone': zone_filter,  
+        'user_zone': request.user.zone
+        })
 
 
 @login_required
 def chef_equipe_dashboard(request):
+    zone_filter = request.GET.get('zone') or 'VK'
     operateurs = User.objects.all().order_by('-created_at')
     taches = Tache.objects.all().order_by(
         models.Case(
@@ -204,7 +223,7 @@ def chef_equipe_dashboard(request):
         ),
         "-created_at"
     )
-    alertechefs = Alertechef.objects.all().order_by(
+    alertechefs = Alertechef.objects.filter(poste__zone=zone_filter).order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
             models.When(statut="traite", then=1),
@@ -216,7 +235,9 @@ def chef_equipe_dashboard(request):
     return render(request, 'chef_equipe_dashboard.html', {
         'taches': taches,
         'operateurs': operateurs,
-        'alertechefs': alertechefs
+        'alertechefs': alertechefs,
+        'current_zone': zone_filter,  
+        'user_zone': request.user.zone
     })
 
 
@@ -513,18 +534,16 @@ def export_data(request):
     
     def safe_get_user_info(obj):
         """Helper function to safely get user info with all edge cases handled"""
-        if not hasattr(obj, 'poste'):
-            return ("Inconnu", "N/A")
-            
-        if obj.poste is None:
-            return ("Utilisateur supprimé", "N/A")
-            
+        if not hasattr(obj, 'poste') or obj.poste is None:
+            return ("Inconnu", "N/A", "N/A")
+        
         try:
             if obj.poste and not obj.poste.is_deleted:
-                return (obj.poste.poste, obj.poste.shift)
-            return ("Utilisateur supprimé", "N/A")
+                return (obj.poste.poste, obj.poste.shift, obj.poste.zone)
+            return ("Utilisateur supprimé", "N/A", "N/A")
         except:
-            return ("Erreur", "N/A")
+            return ("Erreur", "N/A", "N/A")
+
 
     def calculate_time_elapsed(created, validated):
         """Calculate minutes between two datetime objects"""
@@ -538,7 +557,7 @@ def export_data(request):
             return "N/A"
 
     # Common CSV headers
-    common_headers = ['ID', 'Poste', 'Shift', 'Date création', 'Statut', 'Temps écoulé (min)']
+    common_headers = ['ID', 'Poste', 'Shift','Zone' ,'Date de création', 'Heure de création','Heure de clôture','Statut', 'Temps écoulé (min)']
     
     if data_type == "demandes":
         response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
@@ -548,15 +567,20 @@ def export_data(request):
         writer.writerow(common_headers)
         
         for demande in Demande.objects.filter(is_deleted=False):
-            poste, shift = safe_get_user_info(demande)
+            poste, shift, zone = safe_get_user_info(demande)
+
             writer.writerow([
                 demande.id,
                 poste,
                 shift,
-                demande.created_at.strftime('%d/%m/%Y %H:%M'),
+                zone,
+                demande.created_at.strftime('%d/%m/%Y'),
+                demande.created_at.strftime('%H:%M'),
+                demande.validated_at.strftime('%H:%M') if demande.validated_at else "en_attente",
                 demande.statut,
                 calculate_time_elapsed(demande.created_at, demande.validated_at)
             ])
+
         return response
 
     elif data_type == "alertemains":
@@ -566,15 +590,18 @@ def export_data(request):
         writer = csv.writer(response)
         writer.writerow(common_headers)
         
-        for alerte in Alertemain.objects.filter(is_deleted=False):
-            poste, shift = safe_get_user_info(alerte)
+        for alertemain in Alertemain.objects.filter(is_deleted=False):
+            poste, shift = safe_get_user_info(alertemain)
             writer.writerow([
-                alerte.id,
+                alertemain.id,
                 poste,
                 shift,
-                alerte.created_at.strftime('%d/%m/%Y %H:%M'),
-                alerte.statut,
-                calculate_time_elapsed(alerte.created_at, alerte.validated_at)
+                zone,
+                alertemain.created_at.strftime('%d/%m/%Y'),
+                alertemain.created_at.strftime('%H:%M'),
+                alertemain.validated_at.strftime('%H:%M') if alertemain.validated_at else "en_attente",
+                alertemain.statut,
+                calculate_time_elapsed(alertemain.created_at, alertemain.validated_at)
             ])
         return response
 
@@ -585,15 +612,18 @@ def export_data(request):
         writer = csv.writer(response)
         writer.writerow(common_headers)
         
-        for alerte in Alertequal.objects.filter(is_deleted=False):
-            poste, shift = safe_get_user_info(alerte)
+        for alertequal in Alertequal.objects.filter(is_deleted=False):
+            poste, shift = safe_get_user_info(alertequal)
             writer.writerow([
-                alerte.id,
+                alertequal.id,
                 poste,
                 shift,
-                alerte.created_at.strftime('%d/%m/%Y %H:%M'),
-                alerte.statut,
-                calculate_time_elapsed(alerte.created_at, alerte.validated_at)
+                zone,
+                alertequal.created_at.strftime('%d/%m/%Y'),
+                alertequal.created_at.strftime('%H:%M'),
+                alertequal.validated_at.strftime('%H:%M') if alertequal.validated_at else "en_attente",
+                alertequal.statut,
+                calculate_time_elapsed(alertequal.created_at, alertequal.validated_at)
             ])
         return response
 
@@ -604,15 +634,18 @@ def export_data(request):
         writer = csv.writer(response)
         writer.writerow(common_headers)
         
-        for alerte in Alertechef.objects.filter(is_deleted=False):
-            poste, shift = safe_get_user_info(alerte)
+        for alertechef in Alertechef.objects.filter(is_deleted=False):
+            poste, shift = safe_get_user_info(alertechef)
             writer.writerow([
-                alerte.id,
+                alertechef.id,
                 poste,
                 shift,
-                alerte.created_at.strftime('%d/%m/%Y %H:%M'),
-                alerte.statut,
-                calculate_time_elapsed(alerte.created_at, alerte.validated_at)
+                zone,
+                alertechef.created_at.strftime('%d/%m/%Y'),
+                alertechef.created_at.strftime('%H:%M'),
+                alertechef.validated_at.strftime('%H:%M') if alertechef.validated_at else "en_attente",
+                alertechef.statut,
+                calculate_time_elapsed(alertechef.created_at, alertechef.validated_at)
             ])
         return response
 
@@ -626,7 +659,7 @@ def export_data(request):
         for user in User.objects.filter(is_deleted=False):
             writer.writerow([
                 user.poste,
-                user.role(),
+                user.role,
                 user.created_at.strftime('%d/%m/%Y %H:%M'),
                 user.last_login.strftime('%d/%m/%Y %H:%M') if user.last_login else "Jamais",
                 "Actif"

@@ -6,14 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord - Chef d'Équipe</title>
     <link rel="stylesheet" href="{% static 'css/chef_equipe_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard_base.css' %}">
 </head>
 <body>
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
-    <h2>Bienvenue, Chef d'Équipe</h2>
-    <h3>Demande au chef de se rendre sur place.</h3>
-    <h3>Liste des alertes de chef d'equipe</h3>
+    <h2>Responsable Production - Zone {{ current_zone }}</h2>
+
+    <h3>Liste des alertes</h3>
+    
+    <!-- Filtre de zone -->
+    <form method="GET" id="zone-filter-form">
+        <label for="zone">Filtrer par zone:</label>
+        <select name="zone" id="zone-select" onchange="this.form.submit()">
+            <option value="VK" {% if current_zone == "VK" %}selected{% endif %}>VK</option>
+            <option value="CUTTING" {% if current_zone == "CUTTING" %}selected{% endif %}>CUTTING</option>
+            <option value="KIT" {% if current_zone == "KIT" %}selected{% endif %}>KIT</option>
+            
+        </select>
+        <input type="hidden" name="keep_filter" value="1">
+    </form>
+    
     
     <!-- Table des alertes -->
     <div id="table-container">

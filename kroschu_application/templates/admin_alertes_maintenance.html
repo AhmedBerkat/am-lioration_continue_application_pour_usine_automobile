@@ -38,8 +38,10 @@
             <th>Shift</th>
             <th>Zone</th>
             <th>Date de création</th>
+            <th>Heure de création</th>
+            <th>Heure de clôture</th>
             <th>Statut</th>
-            <th>Temps écoulé min</th>
+            <th>Temps écoulé (min)</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -58,7 +60,17 @@
                 {% endif %}
             </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste.zone}}</td>
-            <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|date:"d/m/Y" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|time:"H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
+                {% if alertemain.statut == 'en_attente' %}
+                    en_attente
+                {% else %}
+                    {{ alertemain.validated_at|time:"H:i" }}
+                
+                
+                {% endif %}
+            </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.statut }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">
                 {% if alertemain.temps_de_traitement %}

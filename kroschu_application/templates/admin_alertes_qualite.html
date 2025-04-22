@@ -37,8 +37,10 @@
             <th>Shift</th>
             <th>Zone</th>
             <th>Date de création</th>
+            <th>Heure de création</th>
+            <th>Heure de clôture</th>
             <th>Statut</th>
-            <th>Temps écoulé min</th>
+            <th>Temps écoulé (min)</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -57,7 +59,17 @@
                 {% endif %}
             </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste.zone}}</td>
-            <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|date:"d/m/Y H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|date:"d/m/Y" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|time:"H:i" }}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
+                {% if alertequal.statut == 'en_attente' %}
+                    en_attente
+                {% else %}
+                    {{ alertequal.validated_at|time:"H:i" }}
+                
+                
+                {% endif %}
+            </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.statut }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">
                 {% if alertequal.temps_de_traitement %}
