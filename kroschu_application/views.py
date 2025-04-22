@@ -158,11 +158,11 @@ def logistique_dashboard(request):
     demandes = Demande.objects.filter(poste__zone=zone_filter).order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
-            models.When(statut="traite", then=1),
+            models.When(statut="traité", then=1),
             default=2,
             output_field=models.IntegerField()
         ),
-        "-created_at"
+        "created_at"
     )
 
     return render(request, 'logistique_dashboard.html', {
@@ -179,11 +179,11 @@ def maintenance_dashboard(request):
     alertemains = Alertemain.objects.filter(poste__zone=zone_filter).order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
-            models.When(statut="traite", then=1),
+            models.When(statut="traité", then=1),
             default=2,
             output_field=models.IntegerField()
         ),
-        "-created_at"
+        "created_at"
     )
     return render(request, 'maintenance_dashboard.html', {
         'alertemains': alertemains,
@@ -197,11 +197,11 @@ def qualite_dashboard(request):
     alertequals = Alertequal.objects.filter(poste__zone=zone_filter).order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
-            models.When(statut="traite", then=1),
+            models.When(statut="traité", then=1),
             default=2,
             output_field=models.IntegerField()
         ),
-        "-created_at"
+        "created_at"
     )
     return render(request, 'qualite_dashboard.html', {
         'alertequals': alertequals,
@@ -213,24 +213,24 @@ def qualite_dashboard(request):
 @login_required
 def chef_equipe_dashboard(request):
     zone_filter = request.GET.get('zone') or 'VK'
-    operateurs = User.objects.all().order_by('-created_at')
+    operateurs = User.objects.all().order_by('created_at')
     taches = Tache.objects.all().order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
-            models.When(statut="traite", then=1),
+            models.When(statut="traité", then=1),
             default=2,
             output_field=models.IntegerField()
         ),
-        "-created_at"
+        "created_at"
     )
     alertechefs = Alertechef.objects.filter(poste__zone=zone_filter).order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
-            models.When(statut="traite", then=1),
+            models.When(statut="traité", then=1),
             default=2,
             output_field=models.IntegerField()
         ),
-        "-created_at"
+        "created_at"
     )
     return render(request, 'chef_equipe_dashboard.html', {
         'taches': taches,

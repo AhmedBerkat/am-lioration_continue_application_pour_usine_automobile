@@ -14,7 +14,7 @@
     <select id="statut" name="statut">
         <option value="">Tous</option>
         <option value="en_attente">En attente</option>
-        <option value="traite">Traité</option>
+        <option value="traité">Traité</option>
     </select>
     
     <label for="poste">Poste :</label>
@@ -64,7 +64,7 @@
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|time:"H:i" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">
                 {% if alertemain.statut == 'en_attente' %}
-                    en_attente
+                    En attente
                 {% else %}
                     {{ alertemain.validated_at|time:"H:i" }}
                 
