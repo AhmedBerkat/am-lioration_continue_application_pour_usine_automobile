@@ -18,27 +18,55 @@
 <div class="dashboard-container">
     <!-- Première rangée de boutons (2 boutons) -->
     <div class="buttons-row">
+        <!-- Dans la section Première rangée de boutons, remplacez le bouton Maintenance actuel par : -->
+        <!-- Bouton Maintenance -->
         <div class="left-column">
-            <div class="section">
+            <div class="section" style="position:relative;">
                 <h3>Alerte maintenance</h3>
-                <form method="POST" action="{% url 'kroschu_application:alerte_maintenance' %}">
+                <button type="button" class="circle-button maintenance-button" id="openMaintenancePopup"></button>
+
+                    <div id="maintenancePopup" style="display:none; position:absolute; right:100%; top:0; margin-right:10px;">
+                        <div class="popup-content">
+                            <button type="button" class="popup-button machine-btn" data-type="maintenance_machine">Machine</button>
+                            <button type="button" class="popup-button board-btn" data-type="maintenance_board">Board</button>
+                        </div>
+                    </div>
+
+
+                <!-- Formulaire Maintenance caché -->
+                <form method="POST" action="{% url 'kroschu_application:alerte_maintenance' %}" id="maintenanceForm" style="display:none;">
                     {% csrf_token %}
-                    <button type="submit" class="circle-button maintenance-button"></button>
+                    <input type="hidden" name="maintenance_type" id="maintenanceTypeInput">
                 </form>
             </div>
         </div>
         <div class="left-column">
-            <div class="section">
+            <div class="section" style="position:relative;"> <!-- Ajout de position:relative -->
                 <h3>Demande matériel</h3>
-                <form method="POST" action="{% url 'kroschu_application:demande_materiel' %}">
-                    {% csrf_token %}    
-                    <button type="submit" class="circle-button demande-materiel-button"></button>
-                </form>
+                <button type="button" class="circle-button demande-materiel-button" id="openLogistiquePopup"></button>
+                    
+                    <!-- Popup - cachée initialement -->
+                    <div id="logistiquePopup" style="display:none; position:absolute; left:100%; top:5; margin-left:15px;">
+                        <div class="popup-content">
+                            <button type="button" class="popup-button incomming-btn" data-type="logistique_incomming">Incomming</button>
+                            <button type="button" class="popup-button pagoda-btn" data-type="logistique_pagoda">Pagoda</button>
+                            <button type="button" class="popup-button kit-btn" data-type="logistique_kit">Kit</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Formulaire caché -->
+                    <form method="POST" action="{% url 'kroschu_application:demande_materiel' %}" id="logistiqueForm" style="display:none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="logistique_type" id="logistiqueTypeInput">
+                    </form>
             </div>
+            
         </div>
-        
-        
+    
     </div>
+        
+        
+    
     
     <!-- Deuxième rangée de boutons (2 boutons) -->
     <div class="buttons-row">
@@ -184,6 +212,67 @@
             </tbody>
         </table>
     </div>
+    <script>
+        // Popup Logistique
+        document.getElementById("openLogistiquePopup").addEventListener("click", function(event) {
+            event.stopPropagation(); // Empêche la propagation pour ne pas déclencher la fermeture globale
+            const popup = document.getElementById("logistiquePopup");
+            popup.style.display = popup.style.display === "none" ? "block" : "none";
+        });
+    
+        document.querySelectorAll(".incomming-btn, .pagoda-btn, .kit-btn").forEach(function(button) {
+            button.addEventListener("click", function() {
+                const type = this.getAttribute("data-type");
+                document.getElementById("logistiqueTypeInput").value = type;
+                document.getElementById("logistiqueForm").submit();
+            });
+        });
+    
+        // Popup Maintenance
+        document.getElementById("openMaintenancePopup").addEventListener("click", function(event) {
+            event.stopPropagation();
+            const popup = document.getElementById("maintenancePopup");
+            popup.style.display = popup.style.display === "none" ? "block" : "none";
+        });
+    
+        document.querySelectorAll(".machine-btn, .board-btn").forEach(function(button) {
+            button.addEventListener("click", function() {
+                const type = this.getAttribute("data-type");
+                document.getElementById("maintenanceTypeInput").value = type;
+                document.getElementById("maintenanceForm").submit();
+            });
+        });
+    
+        // Fermer le popup en cliquant sur le fond
+        document.getElementById('logistiquePopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    
+        document.getElementById('maintenancePopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    
+        // Fermer les popups si on clique ailleurs dans le document
+        document.addEventListener('click', function(event) {
+            const logistiquePopup = document.getElementById('logistiquePopup');
+            const maintenancePopup = document.getElementById('maintenancePopup');
+            const isClickInsideLogistique = logistiquePopup.contains(event.target) || event.target.id === 'openLogistiquePopup';
+            const isClickInsideMaintenance = maintenancePopup.contains(event.target) || event.target.id === 'openMaintenancePopup';
+    
+            if (!isClickInsideLogistique) {
+                logistiquePopup.style.display = 'none';
+            }
+            if (!isClickInsideMaintenance) {
+                maintenancePopup.style.display = 'none';
+            }
+        });
+    </script>
+    
 
+    
 </body>
 </html>

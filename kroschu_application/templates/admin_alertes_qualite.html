@@ -49,14 +49,14 @@
         <tr>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.id }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste.poste }}</td>
-            <td style="font-size: 1.0em; font-weight: bold;">
-                {% if alertequal.poste.shift == 'A' %}
+            <td><b>
+                {% if alertequal.shift == 'A' %}
                     A 
-                {% elif alertequal.poste.shift == 'B' %}
+                {% elif alertequal.shift == 'B' %}
                     B 
                 {% else %}
                     C 
-                {% endif %}
+                {% endif %}</b>
             </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste.zone}}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|date:"d/m/Y" }}</td>

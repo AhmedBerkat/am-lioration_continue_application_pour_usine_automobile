@@ -49,9 +49,15 @@ def login_view(request):
                 return redirect('kroschu_application:admin_postes')
             elif user.role == 'operateur':
                 return redirect('kroschu_application:operateur_dashboard')
-            elif user.role == 'logistique':
+            elif user.role == 'logistique_incomming':
                 return redirect('kroschu_application:logistique_dashboard')
-            elif user.role == 'maintenance':
+            elif user.role == 'logistique_pagoda':
+                return redirect('kroschu_application:logistique_dashboard')
+            elif user.role == 'logistique_kit':
+                return redirect('kroschu_application:logistique_dashboard')
+            elif user.role == 'maintenance_board':
+                return redirect('kroschu_application:maintenance_dashboard')
+            elif user.role == 'maintenance_machine':
                 return redirect('kroschu_application:maintenance_dashboard')
             elif user.role == 'qualite':
                 return redirect('kroschu_application:qualite_dashboard')
@@ -111,16 +117,23 @@ def operateur_dashboard(request):
 @login_required
 def demande_materiel(request):
     if request.method == 'POST':
-        Demande.objects.create(poste=request.user,statut='en_attente')
+        logistique_type = request.POST.get('logistique_type')
+        Demande.objects.create(
+            poste=request.user,
+            statut='en_attente',
+            logistique_type=logistique_type
+        )
         return redirect('kroschu_application:operateur_dashboard')
+
 
 @login_required
 def alerte_maintenance(request):
     if request.method == 'POST': 
-        # Création de l'alerte dans la base de données
+        maintenance_type = request.POST.get('maintenance_type')
         Alertemain.objects.create(
             poste=request.user, 
             statut='en_attente',
+            maintenance_type=maintenance_type
             
         )
         return redirect('kroschu_application:operateur_dashboard')
@@ -151,11 +164,29 @@ def alerte_qualite(request):
 
 @login_required
 def logistique_dashboard(request):
-    # Récupérer la zone filtrée (si présente dans les paramètres GET) ou utiliser la zone de l'utilisateur par défaut
-    zone_filter = request.GET.get('zone') or 'VK'
+    # Détermine le type de logistique basé sur le rôle de l'utilisateur
+    role = request.user.role.lower()
     
-    # Filtrer les demandes
-    demandes = Demande.objects.filter(poste__zone=zone_filter).order_by(
+    # Mappage des rôles aux types de demandes
+    type_mapping = {
+        'logistique_incomming': 'logistique_incomming',
+        'logistique_pagoda': 'logistique_pagoda',
+        'logistique_kit': 'logistique_kit'
+    }
+    
+    logistique_type = type_mapping.get(role, None)
+    
+    # Récupérer la zone filtrée (si présente dans les paramètres GET)
+    zone_filter = request.GET.get('zone')
+    
+    # Filtrer les demandes selon le type de logistique ET la zone si spécifiée
+    demandes = Demande.objects.filter(logistique_type=logistique_type)
+    
+    if zone_filter:
+        demandes = demandes.filter(poste__zone=zone_filter)
+    
+    # Ordonner les demandes
+    demandes = demandes.order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
             models.When(statut="traité", then=1),
@@ -164,19 +195,46 @@ def logistique_dashboard(request):
         ),
         "created_at"
     )
-
-    return render(request, 'logistique_dashboard.html', {
+    
+    # Nom affichable pour le dashboard
+    concerne = {
+        'logistique_incomming': 'logistique_incomming',
+        'logistique_pagoda': 'logistique_pagoda',
+        'logistique_kit': 'logistique_kit'
+    }.get(role, 'LOGISTIQUE')
+    
+    context = {
         'demandes': demandes,
-        'current_zone': zone_filter,  # Zone actuellement affichée
-        'user_zone': request.user.zone  # Zone par défaut de l'utilisateur
-    })
-
-
+        'current_zone': zone_filter if zone_filter else 'Toutes zones',  # Affiche la zone filtrée ou "Toutes zones"
+        'logistique_type': concerne,
+        'available_zones': ['VK', 'CUTTING', 'KSK']  # Liste des zones disponibles pour le filtre
+    }
+    return render(request, 'logistique_dashboard.html', context)
 
 @login_required
 def maintenance_dashboard(request):
-    zone_filter = request.GET.get('zone') or 'VK'
-    alertemains = Alertemain.objects.filter(poste__zone=zone_filter).order_by(
+    role = request.user.role.lower()
+    
+    # Mappage des rôles aux types de demandes
+    type_mapping = {
+        'maintenance_board': 'maintenance_board',
+        'maintenance_machine': 'maintenance_machine',
+        
+    }
+    
+    maintenance_type = type_mapping.get(role, None)
+    
+    # Récupérer la zone filtrée (si présente dans les paramètres GET)
+    zone_filter = request.GET.get('zone')
+    
+    # Filtrer les alertemains selon le type de maintenance ET la zone si spécifiée
+    alertemains = Alertemain.objects.filter(maintenance_type=maintenance_type)
+    
+    if zone_filter:
+        alertemains = alertemains.filter(poste__zone=zone_filter)
+    
+    # Ordonner les alertemains
+    alertemains = alertemains.order_by(
         models.Case(
             models.When(statut="en_attente", then=0),
             models.When(statut="traité", then=1),
@@ -185,11 +243,21 @@ def maintenance_dashboard(request):
         ),
         "created_at"
     )
-    return render(request, 'maintenance_dashboard.html', {
+    
+    # Nom affichable pour le dashboard
+    concerne = {
+        'maintenance_board': 'maintenance_board',
+        'maintenance_machine': 'maintenance_machine',
+        
+    }.get(role, 'MAINTENANCE')
+    
+    context = {
         'alertemains': alertemains,
-        'current_zone': zone_filter,  
-        'user_zone': request.user.zone
-    })
+        'current_zone': zone_filter if zone_filter else 'Toutes zones',  # Affiche la zone filtrée ou "Toutes zones"
+        'maintenance_type': concerne,
+        'available_zones': ['VK', 'CUTTING', 'KSK']  # Liste des zones disponibles pour le filtre
+    }
+    return render(request, 'maintenance_dashboard.html', context)
 
 @login_required
 def qualite_dashboard(request):

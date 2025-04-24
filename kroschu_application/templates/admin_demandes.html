@@ -35,6 +35,7 @@
             <th>Poste</th>
             <th>Shift</th>
             <th>Zone</th>
+            <th>Région concernée</th>
             <th>Date de création</th>
             <th>Heure de création</th>
             <th>Heure de clôture</th>
@@ -48,16 +49,28 @@
         <tr>
             <td style="font-size: 1.0em; font-weight: bold;">{{ demande.id }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ demande.poste.poste }}</td> 
-            <td style="font-size: 1.0em; font-weight: bold;">
-                {% if demande.poste.shift == 'A' %}
+            <td><b>
+                {% if demande.shift == 'A' %}
                     A 
-                {% elif demande.poste.shift == 'B' %}
+                {% elif demande.shift == 'B' %}
                     B 
                 {% else %}
                     C 
+                {% endif %}</b>
+            </td>  
+            <td style="font-size: 1.0em; font-weight: bold;">{{ demande.poste.zone}}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
+                {% if demande.logistique_type == "logistique_incomming" %}
+                    Incomming
+                {% elif demande.logistique_type == "logistique_pagoda" %}
+                    Pagoda
+                {% elif demande.logistique_type == "logistique_kit" %}
+                    Kit
+                {% else %}
+                    -
                 {% endif %}
             </td>
-            <td style="font-size: 1.0em; font-weight: bold;">{{ demande.poste.zone}}</td>
+
             <td style="font-size: 1.0em; font-weight: bold;">{{ demande.created_at|date:"d/m/Y" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ demande.created_at|time:"H:i" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">

@@ -5,18 +5,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de bord - Logistique {{ current_zone }}</title>
+    <title>Tableau de bord - Logistique {{ logistique_type }}</title>
     <link rel="stylesheet" href="{% static 'css/logistique_dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard_base.css' %}">
-     
-
 </head>
 <body>
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
     
-    <h2>Responsable Logistique - Zone {{ current_zone }}</h2>
+    <h2>Responsable Logistique {{ logistique_type }}</h2>
 
     <h3>Liste des demandes de matériel</h3>
     
@@ -24,12 +22,11 @@
     <form method="GET" id="zone-filter-form">
         <label for="zone">Filtrer par zone:</label>
         <select name="zone" id="zone-select" onchange="this.form.submit()">
-            <option value="VK" {% if current_zone == "VK" %}selected{% endif %}>VK</option>
-            <option value="CUTTING" {% if current_zone == "CUTTING" %}selected{% endif %}>CUTTING</option>
-            <option value="KIT" {% if current_zone == "KIT" %}selected{% endif %}>KIT</option>
-            
+            <option value="">Toutes zones</option>
+            {% for zone in available_zones %}
+                <option value="{{ zone }}" {% if current_zone == zone %}selected{% endif %}>{{ zone }}</option>
+            {% endfor %}
         </select>
-        <input type="hidden" name="keep_filter" value="1">
     </form>
     
     <!-- Table des demandes -->
@@ -43,7 +40,7 @@
                     <th>Shift</th>
                     <th>Date de Création</th>
                     <th>Statut</th>
-                    <th>Temps écoulé min</th>
+                    <th>Temps écoulé (min)</th>
                 </tr>
             </thead>
             <tbody id="demandes-body">
@@ -53,31 +50,31 @@
                     <td><b>{{ demande.poste.poste}}</b></td>
                     <td><b>{{ demande.poste.zone}}</b></td>
                     <td><b>
-                        {% if demande.poste.shift == 'A' %}
+                        {% if demande.shift == 'A' %}
                             A 
-                        {% elif demande.poste.shift == 'B' %}
+                        {% elif demande.shift == 'B' %}
                             B 
                         {% else %}
                             C 
                         {% endif %}</b>
-                    </td>
-                    <td><b>{{ demande.created_at|date:"d/m/Y H:i" }}</b></td>
+                    </td>   
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ demande.created_at|date:"d/m/Y H:i" }}</td>
                     <td>
                         <span id="statut-{{ demande.id }}" class="statut {% if demande.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
                             {{ demande.statut }}
                         </span>
                     </td>
-                    <td><b>
+                    <td style="font-size: 1.0em; font-weight: bold;">
                         {% if demande.temps_de_traitement %}
                             {{ demande.temps_de_traitement|floatformat:2 }}
                         {% else %}
                             En attente
-                        {% endif %}</b>
+                        {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8">Aucune demande disponible pour la zone {{ current_zone }}</td>
+                    <td colspan="8">Aucune alerte disponible</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -97,7 +94,7 @@
                 .catch(error => console.error('Erreur lors du rafraîchissement:', error));
         }
 
-        // Rafraîchir toutes les secondes (1000 ms)
+        // Rafraîchir toutes les 5 secondes
         setInterval(refreshTable, 5000);
     </script>
 </body>

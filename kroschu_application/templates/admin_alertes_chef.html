@@ -49,14 +49,14 @@
         <tr>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.id }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.poste.poste }}</td>
-            <td style="font-size: 1.0em; font-weight: bold;">
-                {% if alertechef.poste.shift == 'A' %}
+            <td><b>
+                {% if alertechef.shift == 'A' %}
                     A 
-                {% elif alertechef.poste.shift == 'B' %}
+                {% elif alertechef.shift == 'B' %}
                     B 
                 {% else %}
                     C 
-                {% endif %}
+                {% endif %}</b>
             </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.poste.zone}}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.created_at|date:"d/m/Y" }}</td>

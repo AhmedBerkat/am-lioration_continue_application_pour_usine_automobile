@@ -37,6 +37,7 @@
             <th>Poste</th>
             <th>Shift</th>
             <th>Zone</th>
+            <th>Région concernée</th>
             <th>Date de création</th>
             <th>Heure de création</th>
             <th>Heure de clôture</th>
@@ -50,16 +51,25 @@
         <tr>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.id }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste.poste }}</td>
-            <td style="font-size: 1.0em; font-weight: bold;">
-                {% if alertemain.poste.shift == 'A' %}
+            <td><b>
+                {% if alertemain.shift == 'A' %}
                     A 
-                {% elif alertemain.poste.shift == 'B' %}
+                {% elif alertemain.shift == 'B' %}
                     B 
                 {% else %}
                     C 
-                {% endif %}
+                {% endif %}</b>
             </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste.zone}}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
+                {% if alertemain.maintenance_type == "maintenance_machine" %}
+                    Machine
+                {% elif alertemain.maintenance_type == "maintenance_board" %}
+                    Board
+                {% else %}
+                    -
+                {% endif %}
+            </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|date:"d/m/Y" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|time:"H:i" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">

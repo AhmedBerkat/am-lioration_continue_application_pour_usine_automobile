@@ -17,16 +17,16 @@
     <h3>Liste des alertes</h3>
     
     <!-- Filtre de zone -->
-    <form method="GET" id="zone-filter-form">
-        <label for="zone">Filtrer par zone:</label>
-        <select name="zone" id="zone-select" onchange="this.form.submit()">
-            <option value="VK" {% if current_zone == "VK" %}selected{% endif %}>VK</option>
-            <option value="CUTTING" {% if current_zone == "CUTTING" %}selected{% endif %}>CUTTING</option>
-            <option value="KIT" {% if current_zone == "KIT" %}selected{% endif %}>KIT</option>
-            
-        </select>
-        <input type="hidden" name="keep_filter" value="1">
-    </form>
+<!-- Filtre de zone -->
+<form method="GET" id="zone-filter-form">
+    <label for="zone">Filtrer par zone:</label>
+    <select name="zone" id="zone-select" onchange="this.form.submit()">
+        <option value="">Toutes zones</option>
+        {% for zone in available_zones %}
+            <option value="{{ zone }}" {% if current_zone == zone %}selected{% endif %}>{{ zone }}</option>
+        {% endfor %}
+    </select>
+</form>
     
     <!-- Table des alertes -->
      <div id="table-container">
@@ -49,15 +49,15 @@
                 <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.id }}</td>
                 <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste }}</td>
                 <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste.zone}}</td>
-                <td style="font-size: 1.0em; font-weight: bold;">
-                    {% if alertemain.poste.shift == 'A' %}
+                <td><b>
+                    {% if alertemain.shift == 'A' %}
                         A 
-                    {% elif alertemain.poste.shift == 'B' %}
+                    {% elif alertemain.shift == 'B' %}
                         B 
                     {% else %}
                         C 
-                    {% endif %}
-                </td>
+                    {% endif %}</b>
+                </td>                      
                 <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
                 <td>
                     <span id="statut-{{ alertemain.id }}" class="statut {% if alertemain.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
