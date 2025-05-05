@@ -1,10 +1,15 @@
-<h3>-->gère la communictaion entre les oprateurs et les autre unité (logistique ,maintenance , qualité et production ) dans l'usine   <br>
+<h1>Application destinée à centraliser la communication entre les opérateurs et les services internes (logistique, maintenance, qualité, production).</h1>
 
--->réduire les gaspillage du temps ,et augmente la productivité <br>
+<h3>
+ Réduction des pertes de temps liées aux échanges manuels et amélioration de la productivité globale.<br>
+ Un opérateur peut :<br>
 
--->un oprateur   peux  signaler une demande de matérielle au logistique ,  signaler une panne au maintenance , alerte pour vérification et validation pour qualité  et une demande de suivé pour les chefs d'équipe .<br>
+émettre une demande de matériel au service logistique,<br>
 
--->un interface   admin  permet aux responsable   dextracter les données  et faire les analyse <br>
--->authentification et sécurité des données . </h3>
+signaler une panne à la maintenance,<br>
+
+envoyer une alerte pour contrôle qualité,<br>
+
+demander un suivi auprès des chefs d’équipe </h3>
 
 
