@@ -1,4 +1,4 @@
-<h3>-->gère la communictaion entre les oprateurs et les autre unité dans l'usine : logistique ,maintenance , qualité , production  <br>
+<h3>-->gère la communictaion entre les oprateurs et les autre unité (logistique ,maintenance , qualité et production ) dans l'usine   <br>
 
 -->réduire les gaspillage du temps ,et augmente la productivité <br>
 
