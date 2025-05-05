@@ -1,4 +1,4 @@
-<h1>Application destinée à centraliser la communication entre les opérateurs et les services internes (logistique, maintenance, qualité, production).</h1>
+<h1>Application destinée à centraliser la communication entre les opérateurs et les différentes unités de support (logistique, maintenance, qualité, production).</h1>
 <h4>
  ✅Réduction des pertes de temps liées aux échanges manuels et amélioration de la productivité globale.<br>
  ✅Un opérateur peut :</h4><br>
