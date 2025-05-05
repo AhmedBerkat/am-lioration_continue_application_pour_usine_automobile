@@ -1,15 +1,14 @@
 <h1>Application destinée à centraliser la communication entre les opérateurs et les services internes (logistique, maintenance, qualité, production).</h1>
-
 <h4>
  ✅Réduction des pertes de temps liées aux échanges manuels et amélioration de la productivité globale.<br>
  ✅Un opérateur peut :</h4><br>
 
-<h5>émettre une demande de matériel au service logistique,<br>
+<h5>émettre une demande de matériel au service logistique,</h5><br>
 
-signaler une panne à la maintenance,<br>
+<h5>signaler une panne à la maintenance,</h5><br>
 
-envoyer une alerte pour contrôle qualité,<br>
+<h5>envoyer une alerte pour contrôle qualité,</h5><br>
 
-demander un suivi auprès des chefs d’équipe </h5>
+<h5>demander un suivi auprès des chefs d’équipe </h5>
 
 
