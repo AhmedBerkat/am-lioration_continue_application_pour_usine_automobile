@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'krochuprojet.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'info_usine',  # Remplace par le nom de ta base
-        'USER': 'postgres',  # Remplace par ton utilisateur PostgreSQL
-        'PASSWORD': '2001131',  # Remplace par ton mot de passe PostgreSQL
-        'HOST': 'localhost',  # Laisser localhost si PostgreSQL est local
-        'PORT': '5432',  # Le port par défaut de PostgreSQL
+        'NAME': '',  # Remplace par le nom de ta base
+        'USER': '',  # Remplace par ton utilisateur PostgreSQL
+        'PASSWORD': '',  # Remplace par ton mot de passe PostgreSQL
+        'HOST': '',  # Laisser localhost si PostgreSQL est local
+        'PORT': '',  # Le port par défaut de PostgreSQL
     }
 }
 
