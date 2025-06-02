@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Demande, Alertechef,Alertequal,Alertemain, Tache
+from .models import User, Demande, Alertechef,Alertequal,Alertemain, Tache ,Wire
 
 # Admin pour User
 class UserAdmin(admin.ModelAdmin):
@@ -9,6 +9,22 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('zone',)  # Permet de rechercher par nom, prénom, ou rôle
 
 admin.site.register(User, UserAdmin) 
+
+class WireAdmin(admin.ModelAdmin):
+    list_display = ('ident_code', 'section', 'length', 'color', 'position', 'created_at')
+    search_fields = ('ident_code',)
+    list_filter = ('ident_code',)
+
+class TacheAdmin(admin.ModelAdmin):
+    list_display = ('poste', 'ident_code', 'ident_type', 'type_machine', 'statut', 'created_at')
+    list_filter = ('ident_type', 'statut', 'type_machine')
+    search_fields = ('ident_code', 'poste__poste')
+    list_editable = ('statut',)
+
+
+
+admin.site.register(Wire, WireAdmin)
+admin.site.register(Tache, TacheAdmin)
 
 # Admin pour Demande
 

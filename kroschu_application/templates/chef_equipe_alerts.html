@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertes - Chef d'Équipe</title>
+    <link rel="stylesheet" href="{% static 'css/chef_equipe_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard_base.css' %}">
+
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-links">
+            <a href="{% url 'kroschu_application:chef_equipe_alerts' %}" {% if request.path == '/chef_equipe_alerts/' %}class="active"{% endif %}>Alertes</a>
+            <a href="{% url 'kroschu_application:chef_equipe_tasks' %}" {% if request.path == '/chef_equipe_tasks/' %}class="active"{% endif %}>Gestion des Tâches</a>
+        </div>
+        <a href="{% url 'kroschu_application:logout_view' %}" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+    </div>
+
+    <h1 class="page-title">Responsable Production - Zone {{ current_zone }}</h1>
+
+    <div class="content">
+        <!-- Zone Filter -->
+        <h3>Liste des alertes</h3>
+        <form method="GET" id="zone-filter-form">
+            <label for="zone">Filtrer par zone:</label>
+            <select name="zone" id="zone-select" onchange="this.form.submit()">
+                <option value="">Toutes zones</option>
+                {% for zone in available_zones %}
+                    <option value="{{ zone }}" {% if current_zone == zone %}selected{% endif %}>{{ zone }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <!-- Alerts Table -->
+        <table class="alerts-table">
+            <thead>
+                <tr>
+                    <th>ID Alerte</th>
+                    <th>Poste</th>
+                    <th>Zone</th>
+                    <th>Shift</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Temps écoulé</th>
+                </tr>
+            </thead>
+            <tbody id="alertechefs-body">
+                {% for alertechef in alertechefs %}
+                {% if alertechef.statut == "en_attente" %}
+                <tr>
+                    <td>{{ alertechef.id }}</td>
+                    <td>{{ alertechef.poste }}</td>
+                    <td>{{ alertechef.poste.zone }}</td>
+                    <td>
+                        {% if alertechef.shift == 'A' %}
+                            A
+                        {% elif alertechef.shift == 'B' %}
+                            B
+                        {% else %}
+                            C
+                        {% endif %}
+                    </td>
+                    <td>{{ alertechef.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <span class="statut en-attente">
+                            {{ alertechef.statut }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if alertechef.temps_de_traitement %}
+                            {{ alertechef.temps_de_traitement|floatformat:2 }} min
+                        {% else %}
+                            En attente
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td colspan="7">Aucune alerte en attente disponible</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function refreshTables() {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDocument = parser.parseFromString(html, 'text/html');
+                    document.getElementById('alertechefs-body').innerHTML = 
+                        newDocument.getElementById('alertechefs-body').innerHTML;
+                })
+                .catch(error => console.error('Erreur lors du rafraîchissement:', error));
+        }
+
+        // Refresh every 5 seconds
+        setInterval(refreshTables, 5000);
+    </script>
+</body>
+</html>

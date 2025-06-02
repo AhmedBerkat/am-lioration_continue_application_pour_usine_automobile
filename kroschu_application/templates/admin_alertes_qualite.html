@@ -36,6 +36,7 @@
             <th>Poste</th>
             <th>Shift</th>
             <th>Zone</th>
+            <th>Région concernée</th>
             <th>Date de création</th>
             <th>Heure de création</th>
             <th>Heure de clôture</th>
@@ -59,6 +60,17 @@
                 {% endif %}</b>
             </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste.zone}}</td>
+            <td style="font-size: 1.0em; font-weight: bold;">
+                {% if alertequal.qualite_type == "qualite_vk" %}
+                    Qualité VK
+                {% elif alertequal.qualite_type == "qualite_cutting" %}
+                    Qualité Cutting
+                {% elif alertequal.qualite_type == "qualite_ksk" %}
+                    Qualité KSK
+                {% else %}
+                    -
+                {% endif %}
+            </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|date:"d/m/Y" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|time:"H:i" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">

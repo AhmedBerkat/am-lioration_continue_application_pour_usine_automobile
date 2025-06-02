@@ -12,94 +12,90 @@
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
-    <h2>Responsable Maintenace - Zone {{ current_zone }}</h2>
+    <h2>Responsable Maintenance - Zone {{ current_zone }}</h2>
 
     <h3>Liste des alertes</h3>
     
     <!-- Filtre de zone -->
-<!-- Filtre de zone -->
-<form method="GET" id="zone-filter-form">
-    <label for="zone">Filtrer par zone:</label>
-    <select name="zone" id="zone-select" onchange="this.form.submit()">
-        <option value="">Toutes zones</option>
-        {% for zone in available_zones %}
-            <option value="{{ zone }}" {% if current_zone == zone %}selected{% endif %}>{{ zone }}</option>
-        {% endfor %}
-    </select>
-</form>
+    <form method="GET" id="zone-filter-form">
+        <label for="zone">Filtrer par zone:</label>
+        <select name="zone" id="zone-select" onchange="this.form.submit()">
+            <option value="">Toutes zones</option>
+            {% for zone in available_zones %}
+                <option value="{{ zone }}" {% if current_zone == zone %}selected{% endif %}>{{ zone }}</option>
+            {% endfor %}
+        </select>
+    </form>
     
     <!-- Table des alertes -->
-     <div id="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>ID Alerte</th>
-                <th>Poste</th>
-                <th>Zone</th>
-                <th>Shift</th>
-                <th>Date de Création</th>
-                <th>Statut</th>
-                <th>Temps écoulé min</th>
-                
-            </tr>
-        </thead>
-        <tbody id="alertemains-body">
-            {% for alertemain in alertemains %}
-            <tr>
-                <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.id }}</td>
-                <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste }}</td>
-                <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste.zone}}</td>
-                <td><b>
-                    {% if alertemain.shift == 'A' %}
-                        A 
-                    {% elif alertemain.shift == 'B' %}
-                        B 
-                    {% else %}
-                        C 
-                    {% endif %}</b>
-                </td>                      
-                <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <span id="statut-{{ alertemain.id }}" class="statut {% if alertemain.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
-                        {{ alertemain.statut }}
-                    </span>
-                </td>
-                
-                <td style="font-size: 1.0em; font-weight: bold;">
-                    {% if alertemain.temps_de_traitement %}
-                        {{ alertemain.temps_de_traitement|floatformat:2 }}
-                    {% else %}
-                        En attente
-                    {% endif %}
-                </td>
-                
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">Aucune alerte disponible</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <div id="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Alerte</th>
+                    <th>Poste</th>
+                    <th>Zone</th>
+                    <th>Shift</th>
+                    <th>Date de Création</th>
+                    <th>Statut</th>
+                    <th>Temps écoulé (min)</th>
+                </tr>
+            </thead>
+            <tbody id="alertemains-body">
+                {% for alertemain in alertemains %}
+                {% if alertemain.statut == "en_attente" %}  <!-- Redundant check for safety -->
+                <tr>
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.id }}</td>
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste }}</td>
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.poste.zone}}</td>
+                    <td><b>
+                        {% if alertemain.shift == 'A' %}
+                            A 
+                        {% elif alertemain.shift == 'B' %}
+                            B 
+                        {% else %}
+                            C 
+                        {% endif %}</b>
+                    </td>                      
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ alertemain.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <span id="statut-{{ alertemain.id }}" class="statut en-attente">
+                            {{ alertemain.statut }}
+                        </span>
+                    </td>
+                    <td style="font-size: 1.0em; font-weight: bold;">
+                        {% if alertemain.temps_de_traitement %}
+                            {{ alertemain.temps_de_traitement|floatformat:2 }}
+                        {% else %}
+                            En attente
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td colspan="7">Aucune alerte en attente disponible</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     
-<script>
-    function refreshTable() {
-        fetch(window.location.href)
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const newDocument = parser.parseFromString(html, 'text/html');
-                const newTableBody = newDocument.getElementById('alertemains-body');
-                document.getElementById('alertemains-body').innerHTML = newTableBody.innerHTML;
-            })
-            .catch(error => console.error('Erreur lors du rafraîchissement:', error));
-    }
+    <script>
+        function refreshTable() {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDocument = parser.parseFromString(html, 'text/html');
+                    const newTableBody = newDocument.getElementById('alertemains-body');
+                    document.getElementById('alertemains-body').innerHTML = newTableBody.innerHTML;
+                })
+                .catch(error => console.error('Erreur lors du rafraîchissement:', error));
+        }
 
-    // Rafraîchir toutes les secondes (1000 ms)
-    setInterval(refreshTable, 5000);
-</script>
-    
-
+        // Rafraîchir toutes les 5 secondes (5000 ms)
+        setInterval(refreshTable, 5000);
+    </script>
 </body>
 </html>

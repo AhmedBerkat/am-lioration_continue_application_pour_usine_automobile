@@ -13,7 +13,7 @@
     <select id="statut" name="statut">
         <option value="">Tous</option>
         <option value="en_attente">En attente</option>
-        <option value="traité">Traité</option>
+        <option value="traité">Traité</option> 
     </select>
     
     <label for="poste">Poste :</label>
@@ -36,6 +36,7 @@
             <th>Poste</th>
             <th>Shift</th>
             <th>Zone</th>
+            <th>Région concernée</th>
             <th>Date de création</th>
             <th>Heure de création</th>
             <th>Heure de clôture</th>
@@ -59,6 +60,17 @@
                 {% endif %}</b>
             </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.poste.zone}}</td>
+             <td style="font-size: 1.0em; font-weight: bold;">
+                {% if alertechef.chef_type == "chef_vk" %}
+                    Chef d'equipe  VK
+                {% elif alertechef.chef_type == "chef_cutting" %}
+                    Chef d'equipe Cutting
+                {% elif alertechef.chef_type == "chef_ksk" %}
+                    Chef d'equipe KSK
+                {% else %}
+                    -
+                {% endif %}
+            </td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.created_at|date:"d/m/Y" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">{{ alertechef.created_at|time:"H:i" }}</td>
             <td style="font-size: 1.0em; font-weight: bold;">

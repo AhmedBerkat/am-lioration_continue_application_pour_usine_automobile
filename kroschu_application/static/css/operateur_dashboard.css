@@ -50,7 +50,10 @@ body {
 h2, h3 {
     text-align: center;
 }
-h2 { margin-bottom: 0px; margin-top: 1px; }
+h2 { 
+    margin-bottom: 0px; 
+    margin-top: 1px; 
+}
 h3 {
     border: 2px solid green;
     padding: 6px 12px;
@@ -62,7 +65,10 @@ h3 {
     margin-top: 0px;
     white-space: nowrap; /* Empêche le retour à la ligne */
 }
-h4 { margin-bottom: 3px; margin-top: 3px; }
+h4 { 
+    margin-bottom: 3px; 
+    margin-top: 3px; 
+}
 
 /* Boutons circulaires */
 .circle-button {
@@ -85,36 +91,41 @@ h4 { margin-bottom: 3px; margin-top: 3px; }
 .qualite-button { background-color: yellow; }
 .chef-button { background-color: red; }
 
-/* Tableaux */
-.history {
+/* Tableaux (Historique et Tâches) */
+.history, .tasks {
     overflow-x: auto;
     width: 100%;
     margin-top: 2px;
     border-radius: 5px;
 }
 
-.history table {
+.history table, .tasks table {
     width: 100%;
     border-collapse: collapse;
-    
     margin-bottom: 2px;
     margin-top: 2px;
-    
-  
 }
 
-.history th, .history td {
+.history th, .history td, .tasks th, .tasks td {
     padding: 10px;
     font-size: 14px;
     text-align: center;
     border: 1px solid rgb(29, 28, 28);
-   
 }
 
-.history th {
+.history th, .tasks th {
     background-color: #008E97;
     color: white;
-    
+}
+
+/* Style pour les liens dans la table des tâches */
+.tasks a.view-task {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.tasks a.view-task:hover {
+    text-decoration: underline;
 }
 
 /* Bouton de déconnexion */
@@ -134,6 +145,283 @@ h4 { margin-bottom: 3px; margin-top: 3px; }
 
 .logout-button:hover {
     background: #0056b3;
+}
+
+/* Style pour la table de recherche des fils */
+.lookup-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.wire-table-section {
+    margin-top: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+    display: none;
+}
+
+#wire_table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+#wire_table th, #wire_table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#wire_table th {
+    background-color: #0000FF; /* En-tête colorée en bleu */
+    color: #fff; /* Texte blanc pour contraste */
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+#wire_table td {
+    color: #070707;
+    font-size: 0.95em;
+}
+
+#wire_table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#wire_table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Style pour la popup de sélection des fils */
+#wireSelectionPopup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%; /* Remplir 100% de la largeur */
+    height: 100%; /* Remplir 100% de la hauteur */
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+    z-index: 1000;
+}
+
+#wireSelectionPopup .popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 90%; /* Largeur ajustée à 90% pour éviter les débordements */
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#wireSelectionPopup h3 {
+    margin-top: 0;
+    color: #030303;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#popup_wire_table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+    margin-bottom: 15px;
+}
+
+#popup_wire_table th, #popup_wire_table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#popup_wire_table th {
+    background-color: #008E97;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+#popup_wire_table td {
+    color: #050505;
+    font-size: 0.95em;
+}
+
+#popup_wire_table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#popup_wire_table tr:hover {
+    background-color: #f1f1f1;
+}
+
+#popup_wire_table input[type="checkbox"] {
+    cursor: pointer;
+}
+
+#wireSelectionPopup button {
+    padding: 8px 15px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95em;
+}
+
+#wireSelectionPopup button[type="submit"] {
+    background-color: #13a013;
+    color: white;
+}
+
+#wireSelectionPopup button[type="submit"]:hover {
+    background-color: #008000;
+}
+
+#wireSelectionPopup button#closePopup {
+    background-color: #c71313;
+    color: white;
+}
+
+#wireSelectionPopup button#closePopup:hover {
+    background-color: #FF0000;
+}
+
+/* Style commun aux popups */
+.popup-content {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Boutons circulaires avec couleur et texte visible */
+.popup-button {
+    color: white;
+    padding: 4px 10px;
+    border-radius: 80px;
+    cursor: pointer;
+    text-align: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    width: fit-content;
+}
+
+/* Couleurs spécifiques */
+.incomming-btn { background-color: #02af02; /* bleu */ }
+.pagoda-btn { background-color: Blue; /* orange */ }
+.kit-btn { background-color: Olive; /* vert */ }
+.machine-btn { background-color: navy; /* rouge */ }
+.board-btn { background-color: Purple; /* violet */ }
+
+
+/* Couleurs spécifiques pour la popup Qualité */
+#qualitePopup .vk-btn {
+    background-color: #0000FF !important;
+}
+#qualitePopup .ksk-btn {
+    background-color: #00CED1 !important;
+}
+#qualitePopup .cutting-btn {
+    background-color: #FF4500 !important;
+}
+
+/* Couleurs spécifiques pour la popup Chef */
+#chefPopup .vk-btn {
+    background-color: #6F00FF !important;
+}
+#chefPopup .ksk-btn {
+    background-color: #5eff00 !important;
+}
+#chefPopup .cutting-btn {
+    background-color: #800000 !important;
+}
+
+/* Ajustement de la position de la popup Chef */
+#chefPopup {
+    top: -40px !important;
+    transform: translateY(0);
+}
+#qualitePopup {
+    top: -40px !important;
+    transform: translateY(0);
+}
+#logistiquePopup, #maintenancePopup ,#qualitePopup ,#chefPopup{
+    width: 200px;
+    padding: 10px;
+    background-color: #fff;
+    border: 0px solid rgb(255, 255, 255);
+    z-index: 1000;
+}
+
+/* Points de couleur et codes-barres */
+.color-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+}
+
+.barcode-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.barcode-container svg {
+    width: 300px; /* Agrandir les codes-barres */
+    height: 80px; /* Augmenter la hauteur pour inclure le texte */
+    vertical-align: middle;
+}
+
+/* Boutons dans les tableaux */
+.history button[type="submit"], .tasks button[type="submit"] {
+    width: auto;
+    display: inline-block;
+    background: rgb(21, 230, 21);
+    color: white;
+    font-size: 18px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 165px;
+    height: 30px;
+}
+
+#lookup_wires {
+    padding: 8px;
+    background-color: #009900;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#lookup_wires:hover {
+    background-color: #009000;
+}
+/* Ajout ou modification dans operateur_dashboard.css */
+#qualitePopup {
+    top: -40px !important; /* Force le déplacement vers le haut */
+    transform: translateY(0); /* Assure un positionnement précis */
 }
 
 /* Media Queries pour ajuster les espacements */
@@ -168,95 +456,27 @@ h4 { margin-bottom: 3px; margin-top: 3px; }
         padding: 4px 8px;
     }
     
-    .history th, .history td {
+    .history th, .history td, .tasks th, .tasks td {
         padding: 8px;
         font-size: 12px;
     }
-}
 
-.history button[type="submit"] {
-    width: auto;
-    display: inline-block;
-    background: rgb(21, 230, 21);
-    color: white;
-    font-size: 18px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 165px;
-    height: 30px;
-}
-
-/* Media Query pour les petits écrans */
-@media (max-width: 480px) {
-    button[type="submit"] {
+    .history button[type="submit"], .tasks button[type="submit"] {
         padding: 5px 8px;
         font-size: 13px;
     }
 }
-/* Style commun aux popups */
-.popup-content {
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
 
-/* Boutons circulaires avec couleur et texte visible */
-.popup-button {
-    
-    color: white;
-    padding: 4px 10px;
-    border-radius: 80px;
-    cursor: pointer;
-    text-align: center;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-    width: fit-content;
-}
 
-/* Couleurs spécifiques */
-.incomming-btn {
-    background-color: #02af02; /* bleu */
-}
-
-.pagoda-btn {
-    background-color: Blue; /* orange */
-}
-
-.kit-btn {
-    background-color: Olive; /* vert */
-}
-
-.machine-btn {
-    background-color: navy; /* rouge */
-}
-
-.board-btn {
-    background-color:Purple; /* violet */
-}
-
-#logistiquePopup {
-    width: 300px;
-    
-    padding: 10px; /* plus de marge intérieure */
-    background-color: #fff;
-    border: 0px solid rgb(255, 255, 255);
-    
-    
-    z-index: 1000;
-}
-#maintenancePopup {
-    width: 300px;
-    
-    padding: 10px; /* plus de marge intérieure */
-    background-color: #fff;
-    border: 0px solid rgb(255, 255, 255);
-    
-    
-    z-index: 1000;
-}
+.view-details-btn {
+            background-color: #920000; /* Vert doux */
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .view-details-btn:hover {
+            background-color: #800000;}

@@ -21,69 +21,67 @@
     <form method="GET" id="zone-filter-form">
         <label for="zone">Filtrer par zone:</label>
         <select name="zone" id="zone-select" onchange="this.form.submit()">
-            <option value="VK" {% if current_zone == "VK" %}selected{% endif %}>VK</option>
-            <option value="CUTTING" {% if current_zone == "CUTTING" %}selected{% endif %}>CUTTING</option>
-            <option value="KIT" {% if current_zone == "KIT" %}selected{% endif %}>KIT</option>
-            
+            <option value="">Toutes zones</option>
+            {% for zone in available_zones %}
+                <option value="{{ zone }}" {% if current_zone == zone %}selected{% endif %}>{{ zone }}</option>
+            {% endfor %}
         </select>
-        <input type="hidden" name="keep_filter" value="1">
     </form>
     
-
     <!-- Table des alertes -->
-     <div id="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>ID Alerte</th>
-                <th>Poste</th>
-                <th>Zone</th>
-                <th>Shift</th>
-                <th>Date de Création</th>
-                <th>Statut</th>
-                <th>Temps écoulé min</th>
-                
-            </tr>
-        </thead>
-        <tbody id="alertequals-body">
-            {% for alertequal in alertequals %}
-            <tr>
-                <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.id }}</td>
-                <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste }}</td>
-                <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste.zone}}</td>
-                <td><b>
-                    {% if alertequal.shift == 'A' %}
-                        A 
-                    {% elif alertequal.shift == 'B' %}
-                        B 
-                    {% else %}
-                        C 
-                    {% endif %}</b>
-                </td>
-                <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|date:"d/m/Y H:i" }}</td>
-
-                <td>
-                    <span class="statut {% if alertequal.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
-                        {{ alertequal.statut }}
-                    </span>
-                </td>
-                <td style="font-size: 1.0em; font-weight: bold;">
-                    {% if alertequal.temps_de_traitement %}
-                        {{ alertequal.temps_de_traitement|floatformat:2 }}
-                    {% else %}
-                        En attente
-                    {% endif %}
-                </td>
-                
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">Aucune alerte disponible</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div id="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Alerte</th>
+                    <th>Poste</th>
+                    <th>Zone</th>
+                    <th>Shift</th>
+                    <th>Date de Création</th>
+                    <th>Statut</th>
+                    <th>Temps écoulé (min)</th>
+                </tr>
+            </thead>
+            <tbody id="alertequals-body">
+                {% for alertequal in alertequals %}
+                {% if alertequal.statut == "en_attente" %}  <!-- Redundant check for safety -->
+                <tr>
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.id }}</td>
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste }}</td>
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.poste.zone}}</td>
+                    <td><b>
+                        {% if alertequal.shift == 'A' %}
+                            A 
+                        {% elif alertequal.shift == 'B' %}
+                            B 
+                        {% else %}
+                            C 
+                        {% endif %}</b>
+                    </td>
+                    <td style="font-size: 1.0em; font-weight: bold;">{{ alertequal.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <span class="statut en-attente">
+                            {{ alertequal.statut }}
+                        </span>
+                    </td>
+                    <td style="font-size: 1.0em; font-weight: bold;">
+                        {% if alertequal.temps_de_traitement %}
+                            {{ alertequal.temps_de_traitement|floatformat:2 }}
+                        {% else %}
+                            En attente
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td colspan="7">Aucune alerte en attente disponible</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+
     <script>
         function refreshTable() {
             fetch(window.location.href)
@@ -97,7 +95,7 @@
                 .catch(error => console.error('Erreur lors du rafraîchissement:', error));
         }
 
-        // Rafraîchir toutes les secondes (1000 ms)
+        // Rafraîchir toutes les 5 secondes (5000 ms)
         setInterval(refreshTable, 5000);
     </script>
 </body>

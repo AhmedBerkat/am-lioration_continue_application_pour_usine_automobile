@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Étiquette - Polyvalent</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_base.css' %}">
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-links">
+            <a href="{% url 'kroschu_application:affecter_tache_scan' %}" class="active">Scan Étiquette</a>
+        </div>
+        <a href="{% url 'kroschu_application:logout_view' %}" class="logout-btn">Déconnexion</a>
+    </div>
+
+    <h1>Scanner une Étiquette</h1>
+    <div class="content">
+        <form id="scanForm" method="POST">
+            {% csrf_token %}
+            <label for="ident_code">Ident Code (V_ident/P_ident):</label>
+            <input type="text" id="ident_code" name="ident_code" placeholder="Ex: V56385686588" required>
+            <br>
+            <label for="version">Version:</label>
+            <select name="version" id="version" required>
+                <option value="">Sélectionner la version</option>
+                <option value="v1">Vers 1</option>
+                <option value="v2">Vers 2</option>
+                <option value="v6">Vers 6</option>
+                <option value="v7">Vers 7</option>
+            </select>
+            <br>
+            <button type="submit">Scanner</button>
+        </form>
+        <div id="scanResult"></div>
+    </div>
+
+    <script>
+        document.getElementById('scanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch("{% url 'kroschu_application:affecter_tache_scan' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('scanResult').innerHTML = `<p style="color: green;">${data.success}</p>`;
+                } else {
+                    document.getElementById('scanResult').innerHTML = `<p style="color: red;">Erreur: ${data.error}</p>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById('scanResult').innerHTML = `<p style="color: red;">Erreur: ${error.message}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>

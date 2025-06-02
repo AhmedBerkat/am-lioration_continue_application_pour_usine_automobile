@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Tâches - Polyvalent</title>
+    <link rel="stylesheet" href="{% static 'css/chef_equipe_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard_base.css' %}">
+
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-links">
+            <a href="{% url 'kroschu_application:chef_equipe_alerts' %}" {% if request.path == '/chef_equipe_alerts/' %}class="active"{% endif %}>Alertes</a>
+            <a href="{% url 'kroschu_application:chef_equipe_tasks' %}" {% if request.path == '/chef_equipe_tasks/' %}class="active"{% endif %}>Gestion des Tâches</a>
+        </div>
+        <a href="{% url 'kroschu_application:logout_view' %}" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+    </div>
+
+    <h1 class="page-title">Responsable Production - Zone {{ current_zone }}</h1>
+
+    <h1>Affecter une Tâche</h1>
+    <div class="content">
+        <form id="affectForm" method="POST" action="{% url 'kroschu_application:affecter_tache' %}">
+            {% csrf_token %}
+            <label for="ident_code">Code (V_ident/PM) :</label>
+            <input type="text" id="ident_code" name="ident_code" placeholder="Ex: V56385686588" required>
+            <br>
+            <button type="submit">Affecter</button>
+            <!-- Ajout du message ici -->
+            {% if affect_message %}
+                <p style="color: green; margin-top: 5px;">{{ affect_message }}</p>
+            {% endif %}
+        </form>
+        <div id="affectResult"></div>
+    </div>
+
+    <!-- Tasks Table -->
+    <div class="task-list">
+        <h3>Tâches assignées (en attente)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Poste</th>
+                    <th>Zone</th>
+                    <th>Machine</th>
+                    <th>Identifiant</th>
+                    <th>Code</th>
+                    <th>Version</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody id="taches-body">
+                {% for tache in taches %}
+                <tr>
+                    <td>{{ tache.id }}</td>
+                    <td>{{ tache.poste }}</td>
+                    <td>{{ tache.poste.zone }}</td>
+                    <td>{{ tache.machine.name|default:'N/A' }}</td>
+                    <td>{{ tache.ident_type }}</td>
+                    <td>{{ tache.ident_code }}</td>
+                    <td>{{ tache.version }}</td>
+                    <td>
+                        <span class="statut {% if tache.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
+                            {{ tache.statut }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">Aucune tâche en attente</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function refreshTables() {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDocument = parser.parseFromString(html, 'text/html');
+                    document.getElementById('taches-body').innerHTML = 
+                        newDocument.getElementById('taches-body').innerHTML;
+                })
+                .catch(error => console.error('Erreur lors du rafraîchissement:', error));
+        }
+
+        setInterval(refreshTables, 5000);
+    </script>
+</body>
+</html>

@@ -1,6 +1,218 @@
 :root {
     --primary: #007BFF;
     --primary-dark: #0056b3;
-    --primary-alpha: rgba(0, 123, 255, 0.25);
-    --header-bg: rgb(182, 5, 5);
+    --header-bg: rgb(96, 5, 182);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: var(--header-bg);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-links a.active {
+    background-color: white;
+    color: var(--header-bg);
+}
+
+.logout-btn {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.logout-btn:hover {
+    background-color: #0056b3;
+}
+
+.page-title {
+    margin: 20px;
+    color: var(--header-bg);
+}
+
+.content {
+    padding: 20px;
+    overflow-x: auto; /* Ensures responsiveness for tables */
+}
+
+#zone-filter-form {
+    margin-bottom: 20px;
+}
+
+#zone-filter-form label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+#zone-filter-form select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+/* Specific styling for the alerts table */
+table.alerts-table {
+    width: 100%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.alerts-table th, .alerts-table td {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    
+}
+
+/* General table styling for other tables (e.g., tasks table) */
+table {
+    width: 100%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: rgb(182, 5, 5);
+    color: #fff;
+    font-weight: bold;
+}
+
+td {
+    font-weight: normal;
+}
+
+.statut {
+    padding: 8px 15px; /* Larger padding for status badges in alerts table */
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.alerts-table .statut {
+    padding: 8px 15px; /* Ensure larger padding for alerts table */
+}
+
+table:not(.alerts-table) .statut {
+    padding: 4px 8px; /* Smaller padding for other tables */
+}
+
+.en-attente {
+    background-color: red;
+    color: white;
+}
+
+/*
+.traite {
+    background-color: #28a745;
+    color: #fff;
+}
+*/
+
+/* Task assignment form styling */
+.task-list {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin: 10px 0;
+}
+
+#affectForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+#affectForm label {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+}
+
+#affectForm input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#affectForm input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+#affectForm button {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#affectForm button:hover {
+    background-color: #0056b3;
+}
+
+#affectForm p {
+    font-size: 0.95em;
+    font-weight: bold;
+    color: #28a745;
+    margin: 0;
+    text-align: center;
 }

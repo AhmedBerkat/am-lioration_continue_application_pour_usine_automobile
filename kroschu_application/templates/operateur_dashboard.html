@@ -8,22 +8,21 @@
     <link rel="stylesheet" href="{% static 'css/operateur_dashboard.css' %}">
 </head>
 <body>
+    {% csrf_token %}
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Se déconnecter
     </a>
-    <h2>Opérateur <br> Poste : {{ request.user.poste }} </h2>
+    <h2>Opérateur <br> Poste : {{ request.user.poste }}</h2>
 
     <!-- Section Demande -->
-<!-- Section Demande -->
-<div class="dashboard-container">
-    <!-- Première rangée de boutons (2 boutons) -->
-    <div class="buttons-row">
-        <!-- Dans la section Première rangée de boutons, remplacez le bouton Maintenance actuel par : -->
-        <!-- Bouton Maintenance -->
-        <div class="left-column">
-            <div class="section" style="position:relative;">
-                <h3>Alerte maintenance</h3>
-                <button type="button" class="circle-button maintenance-button" id="openMaintenancePopup"></button>
+    <div class="dashboard-container">
+        <!-- Première rangée de boutons (2 boutons) -->
+        <div class="buttons-row">
+            <!-- Bouton Maintenance -->
+            <div class="left-column">
+                <div class="section" style="position:relative;">
+                    <h3>Alerte maintenance</h3>
+                    <button type="button" class="circle-button maintenance-button" id="openMaintenancePopup"></button>
 
                     <div id="maintenancePopup" style="display:none; position:absolute; right:100%; top:0; margin-right:10px;">
                         <div class="popup-content">
@@ -32,18 +31,17 @@
                         </div>
                     </div>
 
-
-                <!-- Formulaire Maintenance caché -->
-                <form method="POST" action="{% url 'kroschu_application:alerte_maintenance' %}" id="maintenanceForm" style="display:none;">
-                    {% csrf_token %}
-                    <input type="hidden" name="maintenance_type" id="maintenanceTypeInput">
-                </form>
+                    <!-- Formulaire Maintenance caché -->
+                    <form method="POST" action="{% url 'kroschu_application:alerte_maintenance' %}" id="maintenanceForm" style="display:none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="maintenance_type" id="maintenanceTypeInput">
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="left-column">
-            <div class="section" style="position:relative;"> <!-- Ajout de position:relative -->
-                <h3>Demande matériel</h3>
-                <button type="button" class="circle-button demande-materiel-button" id="openLogistiquePopup"></button>
+            <div class="left-column">
+                <div class="section" style="position:relative;">
+                    <h3>Demande matériel</h3>
+                    <button type="button" class="circle-button demande-materiel-button" id="openLogistiquePopup"></button>
                     
                     <!-- Popup - cachée initialement -->
                     <div id="logistiquePopup" style="display:none; position:absolute; left:100%; top:5; margin-left:15px;">
@@ -59,44 +57,118 @@
                         {% csrf_token %}
                         <input type="hidden" name="logistique_type" id="logistiqueTypeInput">
                     </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Deuxième rangée de boutons (2 boutons) -->
+        <div class="buttons-row">
+            <div class="right-column">
+                <div class="section" style="position:relative;">
+                    <h3>Alerte qualité</h3>
+                    <button type="button" class="circle-button qualite-button" id="openQualitePopup"></button>
+
+                    <div id="qualitePopup" style="display:none; position:absolute; right:100%; top:-50px; margin-right:10px;">
+                        <div class="popup-content">
+                            <button type="button" class="popup-button cutting-btn" data-type="qualite_cutting">Cutting</button>
+                            <button type="button" class="popup-button ksk-btn" data-type="qualite_ksk">KSK</button>
+                            <button type="button" class="popup-button vk-btn" data-type="qualite_vk">VK</button>
+                        </div>
+                    </div>
+
+                    <!-- Formulaire Qualité caché -->
+                    <form method="POST" action="{% url 'kroschu_application:alerte_qualite' %}" id="qualiteForm" style="display:none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="qualite_type" id="qualiteTypeInput">
+                    </form>
+                </div>
             </div>
             
-        </div>
-    
-    </div>
-        
-        
-    
-    
-    <!-- Deuxième rangée de boutons (2 boutons) -->
-    <div class="buttons-row">
-        <div class="right-column">
-            <div class="section">
-                <h3>Alerte qualité</h3>
-                <form method="POST" action="{% url 'kroschu_application:alerte_qualite' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="circle-button qualite-button"></button>
-                </form>
-            </div>
-        </div>
-        
-        <div class="right-column">
-            <div class="section">
-                <h3>Alerte chef d'équipe</h3>
-                <form method="POST" action="{% url 'kroschu_application:alerte_chef' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="circle-button chef-button"></button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+            <div class="right-column">
+                <div class="section" style="position:relative;">
+                    <h3>Alerte chef d'équipe</h3>
+                    <button type="button" class="circle-button chef-button" id="openChefPopup"></button>
+                    <div id="chefPopup" style="display:none; position:absolute; left:100%; top:5; margin-left:15px;">
+                        <div class="popup-content">
+                            <button type="button" class="popup-button cutting-btn" data-type="chef_cutting">Cutting</button>
+                            <button type="button" class="popup-button ksk-btn" data-type="chef_ksk">KSK</button>
+                            <button type="button" class="popup-button vk-btn" data-type="chef_vk">VK</button>
+                        </div>
+                    </div>
 
-    <!-- Section Historique des demandes et alertes -->
+                    <!-- Formulaire Chef d'équipe caché -->
+                    <form method="POST" action="{% url 'kroschu_application:alerte_chef' %}" id="chefForm" style="display:none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="chef_type" id="chefTypeInput">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section pour afficher les détails des fils -->
+    <div class="wire-table-section" id="wireTableSection" style="display: none;">
+        <h4>Détails des fils pour <span id="display_ident_code"></span></h4>
+        <table id="wire_table">
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>Longueur</th>
+                    <th>Couleur</th>
+                    <th>Position</th>
+                    <th>L_ident</th>
+                    <th>Version</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="tasks">
+        <h3>Tâches assignées</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Tâche</th>
+                    <th>Code</th>
+                    <th>Type</th>
+                    <th>Machine</th>
+                    <th>Version</th>
+                    <th>Statut</th>
+                    <th>Détails</th> <!-- Nouvelle colonne pour le bouton Détails -->
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tache in taches %}
+                    <tr>
+                        <td style="font-size: 1.1em; font-weight: bold;">{{ tache.id }}</td>
+                        <td style="font-size: 1.4em; font-weight: bold;">{{ tache.ident_code }}</td>
+                        <td>{{ tache.ident_type }}</td>
+                        <td>{{ tache.type_machine }}</td>
+                        <td>{{ tache.version }}</td>
+                        <td>{{ tache.statut }}</td>
+                        <td>
+                            <button type="button" class="view-details-btn" data-task-id="{{ tache.id }}">Détails</button>
+                        </td>
+                        <td>
+                            {% if tache.statut == 'en_attente' %}
+                                <form method="POST" action="{% url 'kroschu_application:signaler_tache_terminee' tache.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Terminer</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="8">Aucune tâche assignée.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     <div class="history">
         <h3>Historique des demandes et alertes</h3>
-
-        <!-- Tableau des Demandes de matériel -->
         <h4>Demandes de matériel envoyées :</h4>
         <table>
             <thead>
@@ -110,23 +182,21 @@
                 {% for demande in demandes %}
                     <tr>
                         <td style="font-size: 1.1em; font-weight: bold;">{{ demande.id }}</td>
-                        <td>{{ demande.statut}}</td>
+                        <td>{{ demande.statut }}</td>
                         <td>
                             {% if demande.statut == 'en_attente' %}
                                 <form method="POST" action="{% url 'kroschu_application:valider_demande' demande.id %}">
                                     {% csrf_token %}
-                                    <button type="submit">Valider </button>
+                                    <button type="submit">Valider</button>
                                 </form>
                             {% endif %}
                         </td>
                     </tr>
                 {% empty %}
-                    <tr><td colspan="4">Aucune demande envoyée.</td></tr>
+                    <tr><td colspan="3">Aucune demande envoyée.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
-
-        <!-- Tableau des Alertes Maintenance envoyées -->
         <h4>Alertes Maintenance Envoyées :</h4>
         <table>
             <thead>
@@ -139,13 +209,13 @@
             <tbody>
                 {% for alertemain in alertemains %}
                     <tr>
-                        <td  style="font-size: 1.1em; font-weight: bold;">{{ alertemain.id }}</td>
-                        <td>{{ alertemain.statut}}</td>
+                        <td style="font-size: 1.1em; font-weight: bold;">{{ alertemain.id }}</td>
+                        <td>{{ alertemain.statut }}</td>
                         <td>
                             {% if alertemain.statut == 'en_attente' %}
                                 <form method="POST" action="{% url 'kroschu_application:valider_alerte_maintenance' alertemain.id %}">
                                     {% csrf_token %}
-                                    <button type="submit">Valider </button>
+                                    <button type="submit">Valider</button>
                                 </form>
                             {% endif %}
                         </td>
@@ -165,13 +235,13 @@
                 </tr>
             </thead>
             <tbody>
-                {% for  alertequal in alertequals %}
+                {% for alertequal in alertequals %}
                     <tr>
-                        <td  style="font-size: 1.1em; font-weight: bold;">{{  alertequal.id }}</td>
-                        <td>{{  alertequal.statut }}</td>
+                        <td style="font-size: 1.1em; font-weight: bold;">{{ alertequal.id }}</td>
+                        <td>{{ alertequal.statut }}</td>
                         <td>
-                            {% if  alertequal.statut == 'en_attente' %}
-                                <form method="POST" action="{% url 'kroschu_application:valider_alerte_qualite'  alertequal.id %}">
+                            {% if alertequal.statut == 'en_attente' %}
+                                <form method="POST" action="{% url 'kroschu_application:valider_alerte_qualite' alertequal.id %}">
                                     {% csrf_token %}
                                     <button type="submit">Valider</button>
                                 </form>
@@ -183,7 +253,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <h4>Alertes chef d'equipe Envoyées :</h4>
+        <h4>Alertes Chef d'Équipe Envoyées :</h4>
         <table>
             <thead>
                 <tr>
@@ -195,7 +265,7 @@
             <tbody>
                 {% for alertechef in alertechefs %}
                     <tr>
-                        <td  style="font-size: 1.1em; font-weight: bold;">{{ alertechef.id }}</td>
+                        <td style="font-size: 1.1em; font-weight: bold;">{{ alertechef.id }}</td>
                         <td>{{ alertechef.statut }}</td>
                         <td>
                             {% if alertechef.statut == 'en_attente' %}
@@ -212,67 +282,233 @@
             </tbody>
         </table>
     </div>
+
+    <div id="wireSelectionPopup">
+        <div class="popup-content">
+            <h3>Sélectionner les fils à demander pour la tâche <span id="popup_ident_code"></span></h3>
+            <form id="request_materiel_form" method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="logistique_type" id="logistique_type" value="logistique_pagoda">
+                <table id="popup_wire_table">
+                    <thead>
+                        <tr>
+                            <th>Sélectionner</th>
+                            <th>Section </th>
+                            <th>Longueur </th>
+                            <th>Couleur</th>
+                            <th>Position</th>
+                            <th>L_ident</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button type="submit">Envoyer demande logistique</button>
+                <button type="button" id="closePopup">Fermer</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script>
-        // Popup Logistique
-        document.getElementById("openLogistiquePopup").addEventListener("click", function(event) {
-            event.stopPropagation(); // Empêche la propagation pour ne pas déclencher la fermeture globale
-            const popup = document.getElementById("logistiquePopup");
-            popup.style.display = popup.style.display === "none" ? "block" : "none";
-        });
-    
-        document.querySelectorAll(".incomming-btn, .pagoda-btn, .kit-btn").forEach(function(button) {
-            button.addEventListener("click", function() {
-                const type = this.getAttribute("data-type");
-                document.getElementById("logistiqueTypeInput").value = type;
-                document.getElementById("logistiqueForm").submit();
+        let selectedTaskId = null;
+
+        function getColorStyle(colorName) { 
+            const colors = {   
+                'Red': 'red',          
+                'Yellow': 'yellow', 
+                'White': 'white',
+                'Green': 'green',
+                'Blue': 'blue',
+                'Black': 'black'
+            };
+            return colors[colorName] || '#ccc';
+        }
+
+        // Gestion du bouton "Détails" pour afficher les composants des fils
+        document.querySelectorAll('.view-details-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const taskId = this.getAttribute('data-task-id');
+                selectedTaskId = taskId;
+                fetch(`/view_task_details/${taskId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        document.getElementById('display_ident_code').textContent = `${data.ident_code} (Version: ${data.wires[0]?.version || ''})`;
+                        const tbody = document.querySelector('#wire_table tbody');
+                        tbody.innerHTML = '';
+                        data.wires.forEach(wire => {
+                            const colorStyle = getColorStyle(wire.color);
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${wire.section}</td>
+                                    <td>${wire.length}</td>
+                                    <td><span class="color-dot" style="background-color: ${colorStyle};"></span>${wire.color}</td>
+                                    <td>${wire.position}</td>
+                                    <td>${wire.L_ident}</td>
+                                    <td>${wire.version}</td>
+                                </tr>
+                            `;
+                        });
+                        document.getElementById('wireTableSection').style.display = 'block';
+                    })
+                    .catch(error => console.error('Fetch error:', error));
             });
         });
-    
-        // Popup Maintenance
-        document.getElementById("openMaintenancePopup").addEventListener("click", function(event) {
-            event.stopPropagation();
-            const popup = document.getElementById("maintenancePopup");
-            popup.style.display = popup.style.display === "none" ? "block" : "none";
-        });
-    
-        document.querySelectorAll(".machine-btn, .board-btn").forEach(function(button) {
-            button.addEventListener("click", function() {
-                const type = this.getAttribute("data-type");
-                document.getElementById("maintenanceTypeInput").value = type;
-                document.getElementById("maintenanceForm").submit();
+
+        // Gestion de la demande de matériel (Pagoda)
+        document.querySelectorAll('.pagoda-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                if (!selectedTaskId) {
+                    alert('Veuillez d\'abord consulter les détails d\'une tâche avant de faire une demande.');
+                    return;
+                }
+
+                fetch(`/view_task_details/${selectedTaskId}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur réseau: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    document.getElementById('popup_ident_code').textContent = data.ident_code;
+                    const tbody = document.querySelector('#popup_wire_table tbody');
+                    tbody.innerHTML = '';
+                    data.wires.forEach((wire, index) => {
+                        const colorStyle = getColorStyle(wire.color);
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><input type="checkbox" name="wire_ids" value="${wire.id}"></td>
+                                <td>${wire.section}</td>
+                                <td>${wire.length}</td>
+                                <td><span class="color-dot" style="background-color: ${colorStyle};"></span>${wire.color}</td>
+                                <td>${wire.position}</td>
+                                <td>
+                                    <div class="barcode-container">
+                                        <svg id="barcode-${index}" class="barcode"></svg>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        try {
+                            JsBarcode(`#barcode-${index}`, wire.L_ident, {
+                                format: "CODE128",
+                                displayValue: true,
+                                fontSize: 14,
+                                width: 2,
+                                height: 40,
+                                margin: 5
+                            });
+                        } catch (barcodeError) {
+                            console.error('Erreur lors de la génération du code-barres pour', wire.L_ident, ':', barcodeError);
+                        }
+                    });
+
+                    document.getElementById('request_materiel_form').action = "{% url 'kroschu_application:demande_materiel' %}";
+                    document.getElementById('logistique_type').value = 'logistique_pagoda';
+                    document.getElementById('wireSelectionPopup').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    alert('Une erreur est survenue lors de la récupération des détails des fils. Veuillez réessayer.');
+                });
             });
         });
-    
-        // Fermer le popup en cliquant sur le fond
-        document.getElementById('logistiquePopup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-            }
+
+        document.querySelectorAll('.incomming-btn, .kit-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('logistiqueTypeInput').value = button.dataset.type;
+                document.getElementById('logistiqueForm').submit();
+            });
         });
-    
-        document.getElementById('maintenancePopup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-            }
+
+        document.getElementById('closePopup').addEventListener('click', () => {
+            document.getElementById('wireSelectionPopup').style.display = 'none';
         });
-    
-        // Fermer les popups si on clique ailleurs dans le document
+
+        document.getElementById('openMaintenancePopup').addEventListener('click', () => {
+            document.getElementById('maintenancePopup').style.display = 'block';
+        });
+
+        document.querySelectorAll('.popup-button[data-type^="maintenance"]').forEach(button => {
+            button.addEventListener('click', () => {
+                document.getElementById('maintenanceTypeInput').value = button.dataset.type;
+                document.getElementById('maintenanceForm').submit();
+            });
+        });
+
+        document.getElementById('openLogistiquePopup').addEventListener('click', () => {
+            document.getElementById('logistiquePopup').style.display = 'block';
+        });
+
+        document.getElementById('openQualitePopup').addEventListener('click', () => {
+            document.getElementById('qualitePopup').style.display = 'block';
+        });
+
+        document.getElementById('openChefPopup').addEventListener('click', () => {
+            document.getElementById('chefPopup').style.display = 'block';
+        });
+
+        document.querySelectorAll('.popup-button[data-type^="chef"]').forEach(button => {
+            button.addEventListener('click', () => {
+                document.getElementById('chefTypeInput').value = button.dataset.type;
+                document.getElementById('chefForm').submit();
+            });
+        });
+
+        document.querySelectorAll('.popup-button[data-type^="qualite"]').forEach(button => {
+            button.addEventListener('click', () => {
+                document.getElementById('qualiteTypeInput').value = button.dataset.type;
+                document.getElementById('qualiteForm').submit();
+            });
+        });
+
         document.addEventListener('click', function(event) {
-            const logistiquePopup = document.getElementById('logistiquePopup');
             const maintenancePopup = document.getElementById('maintenancePopup');
-            const isClickInsideLogistique = logistiquePopup.contains(event.target) || event.target.id === 'openLogistiquePopup';
-            const isClickInsideMaintenance = maintenancePopup.contains(event.target) || event.target.id === 'openMaintenancePopup';
-    
-            if (!isClickInsideLogistique) {
+            const logistiquePopup = document.getElementById('logistiquePopup');
+            const qualitePopup = document.getElementById('qualitePopup');
+            const chefPopup = document.getElementById('chefPopup');
+            const openMaintenanceButton = document.getElementById('openMaintenancePopup');
+            const openLogistiqueButton = document.getElementById('openLogistiquePopup');
+            const openQualiteButton = document.getElementById('openQualitePopup');
+            const openChefButton = document.getElementById('openChefPopup');
+
+            if (!maintenancePopup.contains(event.target) && !openMaintenanceButton.contains(event.target) && maintenancePopup.style.display === 'block') {
+                maintenancePopup.style.display = 'none';
+            }
+
+            if (!logistiquePopup.contains(event.target) && !openLogistiqueButton.contains(event.target) && logistiquePopup.style.display === 'block') {
                 logistiquePopup.style.display = 'none';
             }
-            if (!isClickInsideMaintenance) {
-                maintenancePopup.style.display = 'none';
+
+            if (!qualitePopup.contains(event.target) && !openQualiteButton.contains(event.target) && qualitePopup.style.display === 'block') {
+                qualitePopup.style.display = 'none';
+            }
+
+            if (!chefPopup.contains(event.target) && !openChefButton.contains(event.target) && chefPopup.style.display === 'block') {
+                chefPopup.style.display = 'none';
+            }
+        });
+
+        document.getElementById('request_materiel_form').addEventListener('submit', function(e) {
+            const selectedWireIds = Array.from(
+                document.querySelectorAll('#popup_wire_table input[name="wire_ids"]:checked')
+            ).map(checkbox => checkbox.value);
+            if (selectedWireIds.length === 0) {
+                e.preventDefault();
+                alert('Veuillez sélectionner au moins un fil.');
             }
         });
     </script>
-    
-
-    
 </body>
 </html>

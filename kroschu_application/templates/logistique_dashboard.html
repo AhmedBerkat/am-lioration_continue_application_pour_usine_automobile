@@ -8,6 +8,26 @@
     <title>Tableau de bord - Logistique {{ logistique_type }}</title>
     <link rel="stylesheet" href="{% static 'css/logistique_dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard_base.css' %}">
+    <!-- Inclure JsBarcode -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <style>
+        .L_ident-container {
+            margin: 5px 0;
+            display: block;
+        }
+        .L_ident-container svg {
+            width: 300px; /* Agrandir les codes-barres */
+            height: 80px; /* Agrandir les codes-barres */
+            vertical-align: middle;
+        }
+        .L_ident-text {
+            margin-right: 10px;
+            vertical-align: middle;
+            display: inline-block;
+            font-size: 1.1em; /* Texte plus grand pour plus de clarté */
+            color: #333; /* Couleur plus foncée pour le texte */
+        }
+    </style>
 </head>
 <body>
     <a href="{% url 'kroschu_application:logout_view' %}" class="logout-button">
@@ -38,6 +58,8 @@
                     <th>Poste</th>
                     <th>Zone</th>
                     <th>Shift</th>
+                    <th>Fil</th>
+                    <th>L_ident</th>
                     <th>Date de Création</th>
                     <th>Statut</th>
                     <th>Temps écoulé (min)</th>
@@ -45,10 +67,11 @@
             </thead>
             <tbody id="demandes-body">
                 {% for demande in demandes %}
+                {% if demande.statut == "en_attente" %}  <!-- Redundant check for safety -->
                 <tr>
                     <td><b>{{ demande.id }}</b></td>
-                    <td><b>{{ demande.poste.poste}}</b></td>
-                    <td><b>{{ demande.poste.zone}}</b></td>
+                    <td><b>{{ demande.poste.poste }}</b></td>
+                    <td><b>{{ demande.poste.zone }}</b></td>
                     <td><b>
                         {% if demande.shift == 'A' %}
                             A 
@@ -58,9 +81,26 @@
                             C 
                         {% endif %}</b>
                     </td>   
+                    <td>
+                        {% for wire in demande.wires.all %}
+                            {{ wire.section }}<br>
+                        {% empty %}
+                            Aucun fil spécifié
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for wire in demande.wires.all %}
+                            <div class="L_ident-container">
+                                <span class="L_ident-text">{{ wire.L_ident }}</span>
+                                <svg class="L_ident"></svg>
+                            </div>
+                        {% empty %}
+                            -
+                        {% endfor %}
+                    </td>
                     <td style="font-size: 1.0em; font-weight: bold;">{{ demande.created_at|date:"d/m/Y H:i" }}</td>
                     <td>
-                        <span id="statut-{{ demande.id }}" class="statut {% if demande.statut == 'en_attente' %}en-attente{% else %}traite{% endif %}">
+                        <span id="statut-{{ demande.id }}" class="statut en-attente">
                             {{ demande.statut }}
                         </span>
                     </td>
@@ -72,9 +112,10 @@
                         {% endif %}
                     </td>
                 </tr>
+                {% endif %}
                 {% empty %}
                 <tr>
-                    <td colspan="8">Aucune alerte disponible</td>
+                    <td colspan="9">Aucune demande en attente disponible</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -82,6 +123,29 @@
     </div>
 
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fonction pour générer les codes-barres
+        function generateL_idents() {
+            document.querySelectorAll('.L_ident').forEach(L_ident => {
+                const L_identeValue = L_ident.previousElementSibling.textContent.trim();
+                try {
+                    JsBarcode(L_ident, L_identeValue, {
+                        format: "CODE128",
+                        displayValue: false,
+                        width: 2,
+                        height: 40,
+                        lineColor: "#333" /* Barres plus foncées pour plus de clarté */
+                    });
+                } catch (error) {
+                    console.error(`Erreur lors de la génération du code-barres pour ${L_identeValue}:`, error);
+                }
+            });
+        }
+
+        // Générer les codes-barres au chargement initial
+        generateL_idents();
+
+        // Rafraîchir le tableau toutes les 5 secondes
         function refreshTable() {
             fetch(window.location.href)
                 .then(response => response.text())
@@ -90,12 +154,13 @@
                     const newDocument = parser.parseFromString(html, 'text/html');
                     const newTableBody = newDocument.getElementById('demandes-body');
                     document.getElementById('demandes-body').innerHTML = newTableBody.innerHTML;
+                    generateL_idents(); // Regénérer les codes-barres après rafraîchissement
                 })
                 .catch(error => console.error('Erreur lors du rafraîchissement:', error));
         }
 
-        // Rafraîchir toutes les 5 secondes
         setInterval(refreshTable, 5000);
+    });
     </script>
 </body>
 </html>
